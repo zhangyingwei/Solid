@@ -4,15 +4,15 @@ package com.github.zhangyingwei.solid.result;
  * @author zhangyw
  * @date 2018/7/3
  */
-public class StringResult<String> implements SolidResult {
-    private String result;
+public class ObjectResult<Object> implements SolidResult {
+    private Object result;
 
-    public StringResult(String result) {
+    public ObjectResult(Object result) {
         this.result = result;
     }
 
     @Override
-    public String getResult() {
+    public Object getResult() {
         return result;
     }
 }

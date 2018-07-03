@@ -28,4 +28,8 @@ public class SolidContext {
     public SolidMethod getMethod(String key) {
         return methodMap.get(key);
     }
+
+    public void unbindArgs(String itemName) {
+        this.params.remove(itemName);
+    }
 }

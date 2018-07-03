@@ -5,8 +5,12 @@ import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.common.SolidUtils;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
+import com.github.zhangyingwei.solid.result.StringResult;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zhangyw
@@ -22,19 +26,40 @@ public class ForProcessBlock extends ProcessBlock {
 
     public ForProcessBlock(String topMark, SolidContext context) {
         super(topMark,context);
-        this.getNames(leftMark);
+        this.getNames(topMark);
     }
 
-    private void getNames(String leftMark) {
-        String forName = leftMark.trim().replaceFirst(leftMark, "").replace(rightMark, "").trim();
+    private void getNames(String topMark) {
+        String forName = topMark.trim().replaceFirst(this.leftMark, "").replace(this.rightMark, "").trim();
         String[] itemAndObject = forName.split("in");
-        this.itemName = itemAndObject[0];
-        this.sourcesName = itemAndObject[1];
-        this.sources = SolidUtils.getValueFromContext(sourcesName, super.context);
+        this.itemName = itemAndObject[0].replace("for","").trim();
+        this.sourcesName = itemAndObject[1].trim();
+        SolidResult<Object> sourcesResult = SolidUtils.getObjectFromContext(sourcesName, super.context);
+        this.sources = sourcesResult.getResult();
     }
 
     @Override
     public SolidResult render() {
-        return null;
+        List<SolidResult> childs = new ArrayList<SolidResult>();
+        if (this.sources instanceof Collection) {
+            Collection collection = (Collection) this.sources;
+            for (Object object : collection) {
+                context.bindArgs(this.itemName, object);
+                childs.addAll(super.childsResult());
+                context.unbindArgs(this.itemName);
+            }
+        } else {
+            Object[] objects = (Object[]) this.sources;
+            for (Object object : objects) {
+                context.bindArgs(this.itemName, object);
+                childs.addAll(super.childsResult());
+                context.unbindArgs(this.itemName);
+            }
+        }
+        StringBuilder sBuilder = new StringBuilder();
+        childs.stream().forEach(child -> {
+            sBuilder.append(child.getResult());
+        });
+        return new StringResult(sBuilder.toString());
     }
 }

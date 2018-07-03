@@ -6,7 +6,7 @@ package com.github.zhangyingwei.solid.items.pipline;
  */
 public class AppendSolidMethod implements SolidMethod {
     @Override
-    public String doFormate(String content, String... args) {
-        return content.concat(args[0]);
+    public String doFormate(String content, String args) {
+        return content.concat(args);
     }
 }

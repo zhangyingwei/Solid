@@ -25,4 +25,8 @@ public abstract class ProcessBlock implements Block {
     protected List<SolidResult> childsResult() {
         return childBlocks.stream().map(child -> child.render()).collect(Collectors.toList());
     }
+
+    protected void addChildBlock(Block block) {
+        this.childBlocks.add(block);
+    }
 }

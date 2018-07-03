@@ -2,6 +2,7 @@ package com.github.zhangyingwei.solid.common;
 
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.demo.User;
+import com.github.zhangyingwei.solid.result.ObjectResult;
 import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
 import com.github.zhangyingwei.solid.result.WowResult;
@@ -16,35 +17,43 @@ import java.util.Map;
  */
 public class SolidUtils {
 
-    public static SolidResult getValueFromContext(String template, SolidContext context) {
+    public static SolidResult<String> getValueFromContext(String template, SolidContext context) {
         String[] objectKeys = template.split("\\.");
         Object tempValue = context.getParams();
         for (String objectKey : objectKeys) {
             tempValue = getValueFromObject(tempValue, objectKey);
-            if (tempValue instanceof WOW) {
-                return new WowResult();
+            if (tempValue instanceof WowResult) {
+                return (SolidResult) tempValue;
             }
         }
-        if (tempValue instanceof WOW) {
-            return new WowResult();
-        } else {
-            return new StringResult(tempValue.toString());
-        }
+        return new StringResult<String>(tempValue.toString());
     }
 
-    private static Object getValueFromObject(Object object, String key) {
+    public static SolidResult<Object> getObjectFromContext(String template, SolidContext context) {
+        String[] objectKeys = template.split("\\.");
+        Object tempValue = context.getParams();
+        for (String objectKey : objectKeys) {
+            tempValue = getValueFromObject(tempValue, objectKey);
+            if (tempValue instanceof WowResult) {
+                return (SolidResult) tempValue;
+            }
+        }
+        return (SolidResult<Object>) tempValue;
+    }
+
+    private static SolidResult getValueFromObject(Object object, String key) {
         if (object instanceof Map) {
             if (((Map) object).containsKey(key)) {
-                return ((Map) object).get(key);
+                return new ObjectResult(((Map) object).get(key));
             } else {
-                return new WOW();
+                return new WowResult();
             }
         } else {
             return getFromObject(object, key);
         }
     }
 
-    private static Object getFromObject(Object object, String key) {
+    private static SolidResult getFromObject(Object object, String key) {
         Class<? extends Object> clazz = object.getClass();
         String methodName = "get".concat(
                 key.substring(0,1).toUpperCase().concat(key.substring(1).toLowerCase())
@@ -53,12 +62,12 @@ public class SolidUtils {
             Method method = clazz.getMethod(methodName);
             Object result = method.invoke(object);
             if (null == result) {
-                return new WOW();
+                return new WowResult();
             }
-            return result.toString();
+            return new StringResult<>(result.toString());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-            return new WOW();
+            return new WowResult();
         }
     }
 }
