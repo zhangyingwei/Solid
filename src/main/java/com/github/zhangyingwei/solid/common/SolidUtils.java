@@ -2,6 +2,10 @@ package com.github.zhangyingwei.solid.common;
 
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.demo.User;
+import com.github.zhangyingwei.solid.items.Block;
+import com.github.zhangyingwei.solid.items.process.EndProcessBlock;
+import com.github.zhangyingwei.solid.items.process.ForProcessBlock;
+import com.github.zhangyingwei.solid.items.text.TextBlock;
 import com.github.zhangyingwei.solid.result.ObjectResult;
 import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
@@ -17,18 +21,6 @@ import java.util.Map;
  */
 public class SolidUtils {
 
-    public static SolidResult<String> getValueFromContext(String template, SolidContext context) {
-        String[] objectKeys = template.split("\\.");
-        Object tempValue = context.getParams();
-        for (String objectKey : objectKeys) {
-            tempValue = getValueFromObject(tempValue, objectKey);
-            if (tempValue instanceof WowResult) {
-                return (SolidResult) tempValue;
-            }
-        }
-        return new StringResult<String>(tempValue.toString());
-    }
-
     public static SolidResult<Object> getObjectFromContext(String template, SolidContext context) {
         String[] objectKeys = template.split("\\.");
         Object tempValue = context.getParams();
@@ -42,6 +34,9 @@ public class SolidUtils {
     }
 
     private static SolidResult getValueFromObject(Object object, String key) {
+        if (object instanceof SolidResult) {
+            object = ((SolidResult) object).getResult();
+        }
         if (object instanceof Map) {
             if (((Map) object).containsKey(key)) {
                 return new ObjectResult(((Map) object).get(key));
@@ -69,5 +64,19 @@ public class SolidUtils {
             e.printStackTrace();
             return new WowResult();
         }
+    }
+
+    //TODO
+    public static Block routeProcessBlock(String template, SolidContext context) {
+        String command = template.trim().substring(
+                Constants.PROCESS_LEFTMARK.length(),
+                template.trim().length() - Constants.PROCESS_RIGHTMARK.length()
+        ).trim();
+        if (command.startsWith(Constants.TAG_FOR)) {
+            return new ForProcessBlock(template, context);
+        } else if (command.startsWith(Constants.TAG_FOR_END)) {
+            return new EndProcessBlock(template,context).setTag(Constants.TAG_FOR_END);
+        }
+        return new TextBlock("not find process block , return a text block");
     }
 }

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 /**
  * @author zhangyw
  * @date 2018/7/3
+ * for  控制流
  */
 public class ForProcessBlock extends ProcessBlock {
 
@@ -26,11 +27,16 @@ public class ForProcessBlock extends ProcessBlock {
 
     public ForProcessBlock(String topMark, SolidContext context) {
         super(topMark,context);
+        super.tag = Constants.TAG_FOR;
+        super.endTag = Constants.TAG_FOR_END;
         this.getNames(topMark);
     }
 
     private void getNames(String topMark) {
-        String forName = topMark.trim().replaceFirst(this.leftMark, "").replace(this.rightMark, "").trim();
+        String forName = topMark.trim().substring(
+                Constants.PROCESS_LEFTMARK.length(),
+                topMark.trim().length() - Constants.PROCESS_RIGHTMARK.length()
+        ).trim();
         String[] itemAndObject = forName.split("in");
         this.itemName = itemAndObject[0].replace("for","").trim();
         this.sourcesName = itemAndObject[1].trim();

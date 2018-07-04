@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
  * @date 2018/7/3
  */
 public abstract class ProcessBlock implements Block {
+    protected String tag;
+    protected String endTag;
     protected String topMark;
     protected List<Block> childBlocks = new ArrayList<Block>();
     protected SolidContext context;
@@ -28,5 +30,18 @@ public abstract class ProcessBlock implements Block {
 
     protected void addChildBlock(Block block) {
         this.childBlocks.add(block);
+    }
+
+    public String getEndTag() {
+        return endTag;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public Block setTag(String tag) {
+        this.tag = tag;
+        return this;
     }
 }
