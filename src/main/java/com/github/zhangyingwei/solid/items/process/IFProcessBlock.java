@@ -123,6 +123,7 @@ public class IFProcessBlock extends ProcessBlock {
 
         public IfItem(String template) {
             super(template.trim());
+            this.formate();
         }
 
         /**
