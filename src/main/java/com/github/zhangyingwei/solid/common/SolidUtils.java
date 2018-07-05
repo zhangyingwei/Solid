@@ -5,6 +5,7 @@ import com.github.zhangyingwei.solid.demo.User;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.items.process.EndProcessBlock;
 import com.github.zhangyingwei.solid.items.process.ForProcessBlock;
+import com.github.zhangyingwei.solid.items.process.IFProcessBlock;
 import com.github.zhangyingwei.solid.items.text.TextBlock;
 import com.github.zhangyingwei.solid.result.ObjectResult;
 import com.github.zhangyingwei.solid.result.SolidResult;
@@ -77,6 +78,10 @@ public class SolidUtils {
             return new ForProcessBlock(template, context);
         } else if (command.startsWith(Constants.TAG_FOR_END)) {
             return new EndProcessBlock(template,context).setTag(Constants.TAG_FOR_END);
+        } else if (command.startsWith(Constants.TAG_IF)) {
+            return new IFProcessBlock(template, context);
+        } else if (command.startsWith(Constants.TAG_IF_END)){
+            return new EndProcessBlock(template,context).setTag(Constants.TAG_IF_END);
         }
         return new TextBlock("not find process block , return a text block");
     }

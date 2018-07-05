@@ -26,8 +26,8 @@ public class IFProcessBlock extends ProcessBlock {
 
     public IFProcessBlock(String topMark, SolidContext context) {
         super(SolidUtils.removeExtraSpaces(topMark.trim()).toLowerCase(), context);
-        super.tag = "if";
-        super.endTag = "endif";
+        super.tag = Constants.TAG_IF;
+        super.endTag = Constants.TAG_IF_END;
         this.splitTemplateToIfItems();
     }
 
@@ -131,8 +131,26 @@ public class IFProcessBlock extends ProcessBlock {
          */
         //TODO
         void formate() {
-            if (template.contains("=") || template.contains(">") || template.contains("<")) {
-
+            String templateText = template.replaceAll(" ", "");
+            if (templateText.contains("=") || templateText.contains(">") || templateText.contains("<")) {
+                String spliter = "";
+                if (templateText.contains("==")) {
+                    spliter = "==";
+                } else if (templateText.contains("!=")) {
+                    spliter = "!=";
+                } else if (templateText.contains(">")) {
+                    spliter = ">";
+                } else if (templateText.contains("<")) {
+                    spliter = "<";
+                } else if (templateText.contains(">=")) {
+                    spliter = ">=";
+                } else if (templateText.contains("<=")) {
+                    spliter = "<=";
+                }
+                String[] params = templateText.split(spliter);
+                this.first = params[0];
+                this.second = params[1];
+                this.symbol = spliter;
             } else {
                 this.first = SolidUtils.getObjectFromContext(super.template, context);
                 this.second = null;
@@ -141,14 +159,49 @@ public class IFProcessBlock extends ProcessBlock {
 
         /**
          * 判断一个条件是否成立
+         *
          * @return
          */
         //TODO
         IfItemCompare valid() {
-            if (first instanceof WowResult) {
-                return new IfItemCompare(false);
+            if (first instanceof SolidResult) {
+                return new IfItemCompare(!(first instanceof WowResult));
+            } else {
+                if (this.symbol.equals("==")) {
+                    return new IfItemCompare(this.getFirst().equals(this.getSecond()));
+                } else if (this.symbol.equals("!=")) {
+                    return new IfItemCompare(!this.getFirst().equals(this.getSecond()));
+                } else if (this.symbol.equals(">")) {
+                    return new IfItemCompare(
+                            this.getFirst().toString().compareTo(this.getSecond().toString()) > 0
+                    );
+                } else if (this.symbol.equals("<")) {
+                    return new IfItemCompare(
+                            this.getFirst().toString().compareTo(this.getSecond().toString()) < 0
+                    );
+                } else if (this.symbol.equals(">=")) {
+                    new IfItemCompare(
+                            this.getFirst().toString().compareTo(this.getSecond().toString()) > 0
+                    ).orWith(
+                            new IfItemCompare(this.getFirst().equals(this.getSecond()))
+                    );
+                } else if (this.symbol.equals("<=")) {
+                    new IfItemCompare(
+                            this.getFirst().toString().compareTo(this.getSecond().toString()) < 0
+                    ).orWith(
+                            new IfItemCompare(this.getFirst().equals(this.getSecond()))
+                    );
+                }
             }
             return new IfItemCompare(false);
+        }
+
+        public Object getFirst() {
+            return first;
+        }
+
+        public Object getSecond() {
+            return second;
         }
     }
 
