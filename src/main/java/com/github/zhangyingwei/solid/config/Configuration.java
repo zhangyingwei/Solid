@@ -2,6 +2,7 @@ package com.github.zhangyingwei.solid.config;
 
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.items.pipline.AppendSolidMethod;
+import com.github.zhangyingwei.solid.items.pipline.LengthSolidMethod;
 import com.github.zhangyingwei.solid.items.pipline.SolidMethod;
 
 /**
@@ -23,6 +24,7 @@ public class Configuration {
      */
     private void init() {
         this.context.bindMethod("append", new AppendSolidMethod());
+        this.context.bindMethod("length", new LengthSolidMethod());
     }
 
     public SolidContext getContext() {

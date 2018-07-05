@@ -36,9 +36,6 @@ public class Template implements SolidTemplate {
         List<Block> blocks = this.templateParser.parse(content);
         System.out.println(blocks);
         StringBuilder resultText = new StringBuilder();
-//        blocks.stream().map(block -> block.render().getResult()).forEach(res -> {
-//            resultText.append(res);
-//        });
         List<Block> resultBlocks = new ArrayList<Block>();
         Iterator<Block> iterator = blocks.iterator();
         while (iterator.hasNext()) {

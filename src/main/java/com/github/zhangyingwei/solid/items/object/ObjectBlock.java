@@ -39,7 +39,7 @@ public class ObjectBlock implements Block {
         String objectValue = result.getResult().toString();
         List<PiplineBlock> pipLineList = items.stream().map(item -> new PiplineBlock(item,context)).collect(Collectors.toList());
         for (PiplineBlock piplineBlock : pipLineList) {
-            SolidResult<String> pipLineResult = piplineBlock.baseString(objectValue).render();
+            SolidResult pipLineResult = piplineBlock.baseString(objectValue).render();
             if (pipLineResult instanceof WowResult) {
                 try {
                     throw new SolidException("pipline execute error:" + piplineBlock);
@@ -47,7 +47,7 @@ public class ObjectBlock implements Block {
                     e.printStackTrace();
                 }
             } else {
-                objectValue = pipLineResult.getResult();
+                objectValue = pipLineResult.getResult().toString();
             }
         }
         return new StringResult(objectValue);

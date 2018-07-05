@@ -56,17 +56,17 @@ public class TemplateParser {
         return blocks;
     }
 
-    class TemplateFlow {
+    public static class TemplateFlow {
         StringBuilder contentBuilder;
         public TemplateFlow(String content) {
             this.contentBuilder = new StringBuilder(content);
         }
 
-        boolean startWith(String str) {
+        public boolean startWith(String str) {
             return this.contentBuilder.indexOf(str) == 0;
         }
 
-        String pull(int length) {
+        public String pull(int length) {
             String result = contentBuilder.substring(0, length);
             contentBuilder.delete(0, length);
             return result;

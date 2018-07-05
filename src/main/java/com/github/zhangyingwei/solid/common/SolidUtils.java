@@ -13,6 +13,8 @@ import com.github.zhangyingwei.solid.result.WowResult;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,7 +68,6 @@ public class SolidUtils {
         }
     }
 
-    //TODO
     public static Block routeProcessBlock(String template, SolidContext context) {
         String command = template.trim().substring(
                 Constants.PROCESS_LEFTMARK.length(),
@@ -78,5 +79,17 @@ public class SolidUtils {
             return new EndProcessBlock(template,context).setTag(Constants.TAG_FOR_END);
         }
         return new TextBlock("not find process block , return a text block");
+    }
+
+    /**
+     * 去掉多余的空格
+     * @param content
+     * @return
+     */
+    public static String removeExtraSpaces(String content) {
+        while (content.indexOf("  ") >= 0) {
+            content = content.replaceAll("  ", " ");
+        }
+        return content;
     }
 }

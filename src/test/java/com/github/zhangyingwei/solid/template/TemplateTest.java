@@ -21,7 +21,7 @@ public class TemplateTest {
         user.setAge(123);
         Configuration configuration = new Configuration(new StringTemplateResourceLoader());
         TemplateBuilder builder = new TemplateBuilder(configuration);
-        Template template = builder.bulidTemplate("Hello my name is {{ user.name }} and my age is {{user.age }}. and my hobbies have {% for hobby in hobbies %} {{ hobby }} {% endfor %}. haha {{hobbies}} ");
+        Template template = builder.bulidTemplate("Hello my name is {{ user.name | append \" wang \" }} and my age is {{user.age }} and my names length is {{ user.name | length }}. and my hobbies have {% for hobby in hobbies %} {{ hobby }} {% endfor %}. haha {{hobbies}} ");
         template.bind("user", user);
         template.bind("hobbies",new ArrayList<String>(){
             {
