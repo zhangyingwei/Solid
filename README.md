@@ -1,4 +1,4 @@
-# Solid 又一个 Java 模板引擎
+# Solid: 又一个 Java 模板引擎
 
 [![](https://travis-ci.org/zhangyingwei/Solid.svg?branch=master)](https://travis-ci.org/zhangyingwei/Solid)
 [![](https://img.shields.io/badge/language-java-orange.svg)]()
