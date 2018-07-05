@@ -28,7 +28,7 @@ public abstract class ProcessBlock implements Block {
         return childBlocks.stream().map(child -> child.render()).collect(Collectors.toList());
     }
 
-    protected void addChildBlock(Block block) {
+    public void addChildBlock(Block block) {
         this.childBlocks.add(block);
     }
 
@@ -43,5 +43,10 @@ public abstract class ProcessBlock implements Block {
     public Block setTag(String tag) {
         this.tag = tag;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Process(" + topMark + ")";
     }
 }

@@ -19,4 +19,9 @@ public class TextBlock implements Block {
     public SolidResult render() {
         return new StringResult(text);
     }
+
+    @Override
+    public String toString() {
+        return "Text(" + text + ")";
+    }
 }

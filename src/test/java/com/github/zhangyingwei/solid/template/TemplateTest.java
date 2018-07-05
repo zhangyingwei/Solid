@@ -5,6 +5,8 @@ import com.github.zhangyingwei.solid.config.StringTemplateResourceLoader;
 import com.github.zhangyingwei.solid.demo.User;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 /**
@@ -19,8 +21,15 @@ public class TemplateTest {
         user.setAge(123);
         Configuration configuration = new Configuration(new StringTemplateResourceLoader());
         TemplateBuilder builder = new TemplateBuilder(configuration);
-        Template template = builder.bulidTemplate("Hello my name is {{ user.name }} and my age is {{user.age }}. and my hobbies have {% for hobby in hobbies %} {{ hobby }} {% endfor %} ");
+        Template template = builder.bulidTemplate("Hello my name is {{ user.name }} and my age is {{user.age }}. and my hobbies have {% for hobby in hobbies %} {{ hobby }} {% endfor %}. haha {{hobbies}} ");
         template.bind("user", user);
+        template.bind("hobbies",new ArrayList<String>(){
+            {
+                add("足球");
+                add("篮球");
+                add("羽毛球");
+            }
+        });
         System.out.println(template.render());
     }
 }

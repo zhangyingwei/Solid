@@ -24,4 +24,8 @@ public class EndProcessBlock extends ProcessBlock {
     public SolidResult render() {
         return new StringResult(this.endMark);
     }
+
+    public boolean isEndOf(ProcessBlock processBlock) {
+        return processBlock.getEndTag().equals(this.getTag());
+    }
 }

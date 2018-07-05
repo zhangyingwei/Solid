@@ -52,4 +52,9 @@ public class ObjectBlock implements Block {
         }
         return new StringResult(objectValue);
     }
+
+    @Override
+    public String toString() {
+        return "Object(templte=" + template + ")";
+    }
 }
