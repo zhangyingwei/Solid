@@ -32,7 +32,7 @@ public class IFProcessBlock extends ProcessBlock {
     }
 
     private void splitTemplateToIfItems() {
-        String itemsLine = super.topMark.substring(super.tag.length());
+        String itemsLine = super.topMark.substring(this.leftMark.length(), super.topMark.length() - this.rightMark.length());
         TemplateParser.TemplateFlow templateFlow = new TemplateParser.TemplateFlow(itemsLine);
         while (templateFlow.isNotEmpty()) {
             if (templateFlow.startWith("and")) {
