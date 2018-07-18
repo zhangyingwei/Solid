@@ -40,13 +40,9 @@ public class TemplateTest {
     public void htmlRender() throws InterruptedException {
         Configuration configuration = new Configuration(new FileTemplateResourceLoader("src/main/resources"));
         TemplateBuilder builder = new TemplateBuilder(configuration);
-        while (true) {
-            Template template = builder.bulidTemplate("test.html");
-            template.bind("username", "admin");
-            template.bind("password","123456");
-            System.out.println(template.render());
-//            System.out.println("====");
-            TimeUnit.SECONDS.sleep(1);
-        }
+        Template template = builder.bulidTemplate("test.html");
+        template.bind("username", "admin");
+        template.bind("password","123456");
+        System.out.println(template.render());
     }
 }
