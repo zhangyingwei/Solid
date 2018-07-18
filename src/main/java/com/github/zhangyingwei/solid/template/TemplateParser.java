@@ -43,7 +43,7 @@ public class TemplateParser {
                     tempObj.append(templateFlow.pull(1));
                 }
                 tempObj.append(templateFlow.pull(Constants.PROCESS_RIGHTMARK.length()));
-                block = SolidUtils.routeProcessBlock(tempObj.toString(),context);
+                block = SolidUtils.routeProcessBlock(tempObj.toString(),this.context);
             }else{
                 StringBuilder tempObj = new StringBuilder();
                 while (!templateFlow.startWith(Constants.OBJ_LEFTMARK) && !templateFlow.startWith(Constants.PROCESS_LEFTMARK ) && templateFlow.isNotEmpty()) {

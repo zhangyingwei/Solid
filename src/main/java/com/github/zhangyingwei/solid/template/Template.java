@@ -20,9 +20,9 @@ public class Template implements SolidTemplate {
     private String source;
     private List<Block> resultBlocks;
 
-    public Template(Configuration configuration, TemplateParser templateParser, String source) {
+    public Template(Configuration configuration,String source) {
         this.configuration = configuration;
-        this.templateParser = templateParser;
+        this.templateParser = new TemplateParser(this.configuration.getContext());
         this.source = source;
         this.init();
     }
@@ -33,7 +33,7 @@ public class Template implements SolidTemplate {
     private void init() {
         String content = this.configuration.getResourcesLoader().load(source);
         List<Block> blocks = this.templateParser.parse(content);
-        //        System.out.println(blocks);
+        System.out.println(blocks);
         resultBlocks = new ArrayList<Block>();
         Iterator<Block> iterator = blocks.iterator();
         while (iterator.hasNext()) {

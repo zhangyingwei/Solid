@@ -7,5 +7,6 @@ package com.github.zhangyingwei.solid.demo;
 public class Application {
     public static void main(String[] args) {
         String htmlTemplate = "Hello {{user.name}}";
+        System.out.println(htmlTemplate);
     }
 }

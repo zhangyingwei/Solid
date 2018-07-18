@@ -37,15 +37,15 @@ public class ForProcessBlock extends ProcessBlock {
                 Constants.PROCESS_LEFTMARK.length(),
                 topMark.trim().length() - Constants.PROCESS_RIGHTMARK.length()
         ).trim();
-        String[] itemAndObject = forName.split("in");
-        this.itemName = itemAndObject[0].replace("for","").trim();
+        String[] itemAndObject = forName.replaceFirst("for", "").split(" in ");
+        this.itemName = itemAndObject[0].trim();
         this.sourcesName = itemAndObject[1].trim();
-        SolidResult<Object> sourcesResult = SolidUtils.getFromPlaceholderOrNot(super.context, sourcesName);
-        this.sources = sourcesResult.getResult();
     }
 
     @Override
     public SolidResult render() {
+        SolidResult<Object> sourcesResult = SolidUtils.getFromPlaceholderOrNot(super.context, sourcesName);
+        this.sources = sourcesResult.getResult();
         List<SolidResult> childs = new ArrayList<SolidResult>();
         if (this.sources instanceof Collection) {
             Collection collection = (Collection) this.sources;

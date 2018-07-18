@@ -11,12 +11,10 @@ import com.github.zhangyingwei.solid.config.Configuration;
  */
 public class TemplateBuilder {
     private Configuration configuration;
-    private TemplateParser templateParser;
     private SolidCache templateCache = CacheBuilder.getOrCreateCache(Constants.KEY_TEMPLATE_CACHE);
 
     public TemplateBuilder(Configuration configuration) {
         this.configuration = configuration;
-        this.templateParser = new TemplateParser(this.configuration.getContext());
     }
 
     /**
@@ -27,7 +25,7 @@ public class TemplateBuilder {
     public Template bulidTemplate(String source) {
         Template template = (Template) templateCache.get(source);
         if (template == null) {
-            template = new Template(this.configuration, this.templateParser, source);
+            template = new Template(this.configuration,source);
             templateCache.cache(source,template,Constants.KEY_TEMPLATE_TIMEOUT_MILLISECOND);
         }
         return template;

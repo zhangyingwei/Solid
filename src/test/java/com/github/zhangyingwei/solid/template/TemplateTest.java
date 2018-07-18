@@ -10,15 +10,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
 
 /**
  * @author zhangyw
  * @date 2018/7/4
  */
 public class TemplateTest {
+
     @Test
-    public void render() throws Exception {
+    public void renderTest() {
+        System.out.println("render");
         User user = new User();
         user.setName("xiaoming");
         user.setAge(123);
