@@ -18,25 +18,23 @@ public class Template implements SolidTemplate {
     private Configuration configuration;
     private TemplateParser templateParser;
     private String source;
+    private List<Block> resultBlocks;
 
     public Template(Configuration configuration, TemplateParser templateParser, String source) {
         this.configuration = configuration;
         this.templateParser = templateParser;
         this.source = source;
+        this.init();
     }
 
-    @Override
-    public void bind(String key, Object value) {
-        this.configuration.getContext().bindArgs(key, value);
-    }
-
-    @Override
-    public String render() {
+    /**
+     * init the blocks
+     */
+    private void init() {
         String content = this.configuration.getResourcesLoader().load(source);
         List<Block> blocks = this.templateParser.parse(content);
-        System.out.println(blocks);
-        StringBuilder resultText = new StringBuilder();
-        List<Block> resultBlocks = new ArrayList<Block>();
+        //        System.out.println(blocks);
+        resultBlocks = new ArrayList<Block>();
         Iterator<Block> iterator = blocks.iterator();
         while (iterator.hasNext()) {
             Block tempBlock = iterator.next();
@@ -46,6 +44,16 @@ public class Template implements SolidTemplate {
             }
             resultBlocks.add(tempBlock);
         }
+    }
+
+    @Override
+    public void bind(String key, Object value) {
+        this.configuration.getContext().bindArgs(key, value);
+    }
+
+    @Override
+    public String render() {
+        StringBuilder resultText = new StringBuilder();
         resultBlocks.stream().map(block -> block.render().getResult()).forEach(res -> {
             resultText.append(res);
         });

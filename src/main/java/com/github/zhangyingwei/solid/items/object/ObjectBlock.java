@@ -35,7 +35,7 @@ public class ObjectBlock implements Block {
         String templatContent = template.trim().substring(leftMark.length()).substring(0, template.length() - leftMark.length() - rightMark.length());
         List<String> items = Arrays.stream(templatContent.trim().split("\\|")).map(item -> item.trim()).collect(Collectors.toList());
         String templateObject = items.remove(0);
-        SolidResult result = SolidUtils.getObjectFromContext(templateObject, context);
+        SolidResult result = SolidUtils.getFromPlaceholderOrNot(context, templateObject);
         String objectValue = result.getResult().toString();
         List<PiplineBlock> pipLineList = items.stream().map(item -> new PiplineBlock(item,context)).collect(Collectors.toList());
         for (PiplineBlock piplineBlock : pipLineList) {

@@ -66,7 +66,7 @@ public class PiplineBlock implements Block {
 
     private String formateArg(String arg) {
         if (this.needGetValueFromContext) {
-            arg = SolidUtils.getObjectFromContext(arg, context).getResult().toString();
+            arg = SolidUtils.getFromPlaceholderOrNot(context, arg).getResult().toString();
         } else if (null != arg) {
             arg = arg.replaceAll("\"", "");
         }

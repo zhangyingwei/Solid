@@ -8,6 +8,7 @@ import com.github.zhangyingwei.solid.result.StringResult;
 import com.github.zhangyingwei.solid.result.WowResult;
 import com.github.zhangyingwei.solid.template.TemplateParser;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -111,11 +112,11 @@ public class IFProcessBlock extends ProcessBlock {
         /**
          * 第一个对象
          */
-        Object first;
+        SolidResult first;
         /**
          * 第二个对象
          */
-        Object second;
+        SolidResult second;
         /**
          * 条件符号
          */
@@ -132,28 +133,28 @@ public class IFProcessBlock extends ProcessBlock {
          */
         //TODO
         void formate() {
-            String templateText = template.replaceAll(" ", "");
+            String templateText = template.replaceFirst(tag,"").replaceAll(" ", "");
             if (templateText.contains("=") || templateText.contains(">") || templateText.contains("<")) {
                 String spliter = "";
                 if (templateText.contains("==")) {
                     spliter = "==";
                 } else if (templateText.contains("!=")) {
                     spliter = "!=";
+                }else if (templateText.contains(">=")) {
+                    spliter = ">=";
+                } else if (templateText.contains("<=")) {
+                    spliter = "<=";
                 } else if (templateText.contains(">")) {
                     spliter = ">";
                 } else if (templateText.contains("<")) {
                     spliter = "<";
-                } else if (templateText.contains(">=")) {
-                    spliter = ">=";
-                } else if (templateText.contains("<=")) {
-                    spliter = "<=";
                 }
                 String[] params = templateText.split(spliter);
-                this.first = params[0];
-                this.second = params[1];
+                this.first = SolidUtils.getFromPlaceholderOrNot(context, params[0]);
+                this.second = SolidUtils.getFromPlaceholderOrNot(context, params[1]);
                 this.symbol = spliter;
             } else {
-                this.first = SolidUtils.getObjectFromContext(super.template, context);
+                this.first = SolidUtils.getFromPlaceholderOrNot(context, super.template);
                 this.second = null;
             }
         }
@@ -165,43 +166,83 @@ public class IFProcessBlock extends ProcessBlock {
          */
         //TODO
         IfItemCompare valid() {
-            if (first instanceof SolidResult) {
-                return new IfItemCompare(!(first instanceof WowResult));
-            } else {
-                if (this.symbol.equals("==")) {
-                    return new IfItemCompare(this.getFirst().equals(this.getSecond()));
-                } else if (this.symbol.equals("!=")) {
-                    return new IfItemCompare(!this.getFirst().equals(this.getSecond()));
-                } else if (this.symbol.equals(">")) {
-                    return new IfItemCompare(
-                            this.getFirst().toString().compareTo(this.getSecond().toString()) > 0
-                    );
-                } else if (this.symbol.equals("<")) {
-                    return new IfItemCompare(
-                            this.getFirst().toString().compareTo(this.getSecond().toString()) < 0
-                    );
-                } else if (this.symbol.equals(">=")) {
-                    new IfItemCompare(
-                            this.getFirst().toString().compareTo(this.getSecond().toString()) > 0
-                    ).orWith(
-                            new IfItemCompare(this.getFirst().equals(this.getSecond()))
-                    );
-                } else if (this.symbol.equals("<=")) {
-                    new IfItemCompare(
-                            this.getFirst().toString().compareTo(this.getSecond().toString()) < 0
-                    ).orWith(
-                            new IfItemCompare(this.getFirst().equals(this.getSecond()))
-                    );
+            if (second == null) {
+                if (first instanceof WowResult) {
+                    return new IfItemCompare(false);
+                } else {
+                    return new IfItemCompare(true);
+                }
+            } else if (first instanceof SolidResult && second instanceof SolidResult) {
+                if (first instanceof WowResult || second instanceof WowResult) {
+                    return new IfItemCompare(false);
+                }else if (SolidUtils.isNum(this.getFirst().getResult().toString()) && SolidUtils.isNum(this.getSecond().getResult().toString())) {
+                    BigDecimal bfrist = new BigDecimal(this.getFirst().getResult().toString());
+                    BigDecimal bsecond = new BigDecimal(this.getSecond().getResult().toString());
+                    if (this.symbol.equals("==")) {
+                        return new IfItemCompare(
+                                bfrist.compareTo(bsecond) == 0
+                        );
+                    } else if (this.symbol.equals("!=")) {
+                        return new IfItemCompare(
+                                bfrist.compareTo(bsecond) != 0
+                        );
+                    } else if (this.symbol.equals(">")) {
+                        return new IfItemCompare(
+                                bfrist.compareTo(bsecond) == 1
+                        );
+                    } else if (this.symbol.equals("<")) {
+                        return new IfItemCompare(
+                                bfrist.compareTo(bsecond) == -1
+                        );
+                    } else if (this.symbol.equals(">=")) {
+                        return new IfItemCompare(
+                                bfrist.compareTo(bsecond) == 1
+                        ).orWith(
+                                new IfItemCompare(bfrist.compareTo(bsecond) == 0)
+                        );
+                    } else if (this.symbol.equals("<=")) {
+                        return new IfItemCompare(
+                                bfrist.compareTo(bsecond) == -1
+                        ).orWith(
+                                new IfItemCompare(bfrist.compareTo(bsecond) == 0)
+                        );
+                    }
+                } else {
+                    if (this.symbol.equals("==")) {
+                        return new IfItemCompare(this.getFirst().getResult().equals(this.getSecond().getResult()));
+                    } else if (this.symbol.equals("!=")) {
+                        return new IfItemCompare(!this.getFirst().getResult().equals(this.getSecond().getResult()));
+                    } else if (this.symbol.equals(">")) {
+                        return new IfItemCompare(
+                                this.getFirst().getResult().toString().compareTo(this.getSecond().getResult().toString()) > 0
+                        );
+                    } else if (this.symbol.equals("<")) {
+                        return new IfItemCompare(
+                                this.getFirst().getResult().toString().compareTo(this.getSecond().getResult().toString()) < 0
+                        );
+                    } else if (this.symbol.equals(">=")) {
+                        return new IfItemCompare(
+                                this.getFirst().getResult().toString().compareTo(this.getSecond().getResult().toString()) > 0
+                        ).orWith(
+                                new IfItemCompare(this.getFirst().getResult().equals(this.getSecond().getResult()))
+                        );
+                    } else if (this.symbol.equals("<=")) {
+                        return new IfItemCompare(
+                                this.getFirst().getResult().toString().compareTo(this.getSecond().getResult().toString()) < 0
+                        ).orWith(
+                                new IfItemCompare(this.getFirst().getResult().equals(this.getSecond().getResult()))
+                        );
+                    }
                 }
             }
             return new IfItemCompare(false);
         }
 
-        public Object getFirst() {
+        public SolidResult getFirst() {
             return first;
         }
 
-        public Object getSecond() {
+        public SolidResult getSecond() {
             return second;
         }
     }

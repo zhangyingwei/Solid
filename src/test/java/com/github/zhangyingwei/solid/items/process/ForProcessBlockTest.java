@@ -77,4 +77,9 @@ public class ForProcessBlockTest {
         System.out.println(forProcessBlock.render().getResult());
         Assert.assertEquals(forProcessBlock.render().getResult(),"<a>a1234<\\a><a>b1234<\\a><a>c1234<\\a><a>d1234<\\a>");
     }
+
+    @Test
+    public void forInRangeTest() {
+        String topMark = "{% for item in range(10) %}";
+    }
 }

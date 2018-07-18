@@ -40,7 +40,7 @@ public class ForProcessBlock extends ProcessBlock {
         String[] itemAndObject = forName.split("in");
         this.itemName = itemAndObject[0].replace("for","").trim();
         this.sourcesName = itemAndObject[1].trim();
-        SolidResult<Object> sourcesResult = SolidUtils.getObjectFromContext(sourcesName, super.context);
+        SolidResult<Object> sourcesResult = SolidUtils.getFromPlaceholderOrNot(super.context, sourcesName);
         this.sources = sourcesResult.getResult();
     }
 

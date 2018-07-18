@@ -12,11 +12,13 @@ import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
 import com.github.zhangyingwei.solid.result.WowResult;
 
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author zhangyw
@@ -24,7 +26,13 @@ import java.util.Map;
  */
 public class SolidUtils {
 
-    public static SolidResult<Object> getObjectFromContext(String template, SolidContext context) {
+    /**
+     *  get value from context
+     * @param template
+     * @param context
+     * @return
+     */
+    private static SolidResult<Object> getObjectFromContext(String template, SolidContext context) {
         String[] objectKeys = template.split("\\.");
         Object tempValue = context.getParams();
         for (String objectKey : objectKeys) {
@@ -36,6 +44,12 @@ public class SolidUtils {
         return (SolidResult<Object>) tempValue;
     }
 
+    /**
+     * get value from object
+     * @param object
+     * @param key
+     * @return
+     */
     private static SolidResult getValueFromObject(Object object, String key) {
         if (object instanceof SolidResult) {
             object = ((SolidResult) object).getResult();
@@ -51,6 +65,12 @@ public class SolidUtils {
         }
     }
 
+    /**
+     * get value from object
+     * @param object
+     * @param key
+     * @return
+     */
     private static SolidResult getFromObject(Object object, String key) {
         Class<? extends Object> clazz = object.getClass();
         String methodName = "get".concat(
@@ -96,5 +116,76 @@ public class SolidUtils {
             content = content.replaceAll("  ", " ");
         }
         return content;
+    }
+
+    /**
+     * 是否为占位符
+     * @return
+     */
+    private static Boolean isPlaceholder(String text) {
+        char first = text.charAt(0);
+        char last = text.charAt(text.length() - 1);
+        return first != '"' && last != '"';
+    }
+
+    /**
+     * 1. is template is placeholder ?
+     * 2. if true ,get result of placeholder from context
+     * 3. if not , return template itself
+     * @param context
+     * @param template
+     * @return
+     */
+    public static SolidResult getFromPlaceholderOrNot(SolidContext context,String template) {
+        if (isPlaceholder(template)) {
+            return getObjectFromContext(template, context);
+        } else {
+            return new StringResult(template.substring(1, template.length() - 1));
+        }
+    }
+
+    /**
+     * the text is num or not?
+     * @return
+     */
+    public static Boolean isNum(String text) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        return pattern.matcher(text).matches();
+    }
+
+    /**
+     * read from file
+     *
+     * @param filePath
+     * @return
+     */
+    public static String readContentFromFile(String filePath, String encoding) {
+        File file = new File(filePath);
+        InputStreamReader reader = null;
+        try {
+            StringBuilder result = new StringBuilder();
+            reader = new InputStreamReader(new FileInputStream(file), encoding);
+            int flag;
+            while ((flag = reader.read()) != -1) {
+                result.append((char) flag);
+            }
+            return result.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return "";
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(readContentFromFile("src/main/resources/test.html",Constants.CHAR_SET_UTF_8));
     }
 }

@@ -42,6 +42,7 @@ public class ObjectBlockTest {
         String template = "{{ user.name | append \" === \" | append: user1.name}}";
         ObjectBlock objectBlock = new ObjectBlock(context, template);
         String result = objectBlock.render().getResult();
+        System.out.println(result);
         Assert.assertEquals(result,"xiaoming === baobo");
     }
 

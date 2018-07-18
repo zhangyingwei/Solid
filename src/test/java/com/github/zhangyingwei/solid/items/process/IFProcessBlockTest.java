@@ -17,7 +17,8 @@ public class IFProcessBlockTest {
     public void render() throws Exception {
         Configuration configuration = new Configuration(new StringTemplateResourceLoader());
         TemplateBuilder builder = new TemplateBuilder(configuration);
-        Template template = builder.bulidTemplate("{% if a==a and b!=b %} adsf {% endif %} ");
+        Template template = builder.bulidTemplate("{% if \"1\"<=\"2\" %} adsf {% endif %} ");
+        template.bind("username","admin");
         System.out.println(template.render());
     }
 }

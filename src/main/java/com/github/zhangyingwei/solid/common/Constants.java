@@ -5,6 +5,9 @@ package com.github.zhangyingwei.solid.common;
  * @date 2018/7/3
  */
 public class Constants {
+    public static final String CHAR_SET_UTF_8 = "UTF-8";
+    public static final String KEY_TEMPLATE_CACHE = "template_cache";
+    public static long KEY_TEMPLATE_TIMEOUT_MILLISECOND = 10000; // 10s
     public static String OBJ_LEFTMARK = "{{";
     public static String OBJ_RIGHTMARK = "}}";
     public static String PROCESS_LEFTMARK = "{%";

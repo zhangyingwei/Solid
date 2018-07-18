@@ -1,11 +1,14 @@
 package com.github.zhangyingwei.solid.template;
 
 import com.github.zhangyingwei.solid.config.Configuration;
+import com.github.zhangyingwei.solid.config.FileTemplateResourceLoader;
 import com.github.zhangyingwei.solid.config.StringTemplateResourceLoader;
 import com.github.zhangyingwei.solid.demo.User;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -31,5 +34,19 @@ public class TemplateTest {
             }
         });
         System.out.println(template.render());
+    }
+
+    @Test
+    public void htmlRender() throws InterruptedException {
+        Configuration configuration = new Configuration(new FileTemplateResourceLoader("src/main/resources"));
+        TemplateBuilder builder = new TemplateBuilder(configuration);
+        while (true) {
+            Template template = builder.bulidTemplate("test.html");
+            template.bind("username", "admin");
+            template.bind("password","123456");
+            System.out.println(template.render());
+//            System.out.println("====");
+            TimeUnit.SECONDS.sleep(1);
+        }
     }
 }

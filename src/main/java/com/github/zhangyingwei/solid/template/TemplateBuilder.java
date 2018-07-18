@@ -1,5 +1,8 @@
 package com.github.zhangyingwei.solid.template;
 
+import com.github.zhangyingwei.solid.cache.CacheBuilder;
+import com.github.zhangyingwei.solid.cache.SolidCache;
+import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.config.Configuration;
 
 /**
@@ -9,6 +12,7 @@ import com.github.zhangyingwei.solid.config.Configuration;
 public class TemplateBuilder {
     private Configuration configuration;
     private TemplateParser templateParser;
+    private SolidCache templateCache = CacheBuilder.getOrCreateCache(Constants.KEY_TEMPLATE_CACHE);
 
     public TemplateBuilder(Configuration configuration) {
         this.configuration = configuration;
@@ -21,7 +25,11 @@ public class TemplateBuilder {
      * @return
      */
     public Template bulidTemplate(String source) {
-        Template template = new Template(this.configuration,this.templateParser,source);
+        Template template = (Template) templateCache.get(source);
+        if (template == null) {
+            template = new Template(this.configuration, this.templateParser, source);
+            templateCache.cache(source,template,Constants.KEY_TEMPLATE_TIMEOUT_MILLISECOND);
+        }
         return template;
     }
 }
