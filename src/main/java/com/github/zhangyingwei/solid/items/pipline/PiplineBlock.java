@@ -17,19 +17,12 @@ public class PiplineBlock implements Block {
     private String methodName;
     private String arg;
     protected String baseString;
-    private boolean needGetValueFromContext = false;
 
     public PiplineBlock(String methodName, SolidContext context) {
         this.methodName = this.getMethod(methodName);
         String args = methodName.replaceAll(this.methodName,"");
         if (null == args || args.trim().length() > 0) {
-            if (this.methodName.trim().endsWith(":")) {
-                this.needGetValueFromContext = true;
-                this.methodName = this.methodName.substring(0, this.methodName.length() - 1);
-                this.arg = args.trim();
-            } else {
-                this.arg = args.substring(args.indexOf("\""), args.lastIndexOf("\""));
-            }
+            this.arg = args.trim();
         } else {
             this.arg = null;
         }
@@ -50,7 +43,7 @@ public class PiplineBlock implements Block {
         SolidMethod method = this.context.getMethod(methodName);
         Object result = null;
         if (null != method) {
-            result = method.doFormate(this.baseString, this.formateArg(arg));
+            result = method.doFormate(this.baseString, SolidUtils.getFromPlaceholderOrNot(context,this.arg).getResult().toString());
         } else {
             try {
                 throw new SolidMethodNotFoundException(methodName);
@@ -62,14 +55,5 @@ public class PiplineBlock implements Block {
             return new WowResult();
         }
         return new StringResult(result);
-    }
-
-    private String formateArg(String arg) {
-        if (this.needGetValueFromContext) {
-            arg = SolidUtils.getFromPlaceholderOrNot(context, arg).getResult().toString();
-        } else if (null != arg) {
-            arg = arg.replaceAll("\"", "");
-        }
-        return arg;
     }
 }

@@ -137,7 +137,9 @@ public class SolidUtils {
      * @return
      */
     public static SolidResult getFromPlaceholderOrNot(SolidContext context,String template) {
-        if (isPlaceholder(template)) {
+        if (template == null || template.length() == 0) {
+            return new StringResult("");
+        }else if (isPlaceholder(template)) {
             return getObjectFromContext(template, context);
         } else {
             return new StringResult(template.substring(1, template.length() - 1));

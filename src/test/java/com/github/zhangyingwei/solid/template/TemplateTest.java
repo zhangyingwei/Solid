@@ -41,7 +41,7 @@ public class TemplateTest {
         resolver.setSuffix(".html");
         Template template = resolver.resolve("test");
         template.bind("username", "admin");
-        template.bind("password","123456");
+        template.bind("password","密码");
         System.out.println(template.render());
     }
 }
