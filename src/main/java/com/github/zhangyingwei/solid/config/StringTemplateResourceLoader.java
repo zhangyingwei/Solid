@@ -9,4 +9,10 @@ public class StringTemplateResourceLoader implements SolidTemplateResourcesLoade
     public String load(String source) {
         return source;
     }
+
+    @Override
+    public void setPrefix(String prefix) {}
+
+    @Override
+    public void setSuffix(String suffix) {}
 }

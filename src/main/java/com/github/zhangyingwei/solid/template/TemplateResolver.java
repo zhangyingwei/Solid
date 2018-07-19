@@ -3,17 +3,18 @@ package com.github.zhangyingwei.solid.template;
 import com.github.zhangyingwei.solid.cache.CacheBuilder;
 import com.github.zhangyingwei.solid.cache.SolidCache;
 import com.github.zhangyingwei.solid.common.Constants;
-import com.github.zhangyingwei.solid.config.Configuration;
+import com.github.zhangyingwei.solid.config.SolidConfiguration;
 
 /**
  * @author zhangyw
  * @date 2018/7/4
  */
-public class TemplateBuilder {
-    private Configuration configuration;
+public class TemplateResolver {
+    private SolidConfiguration configuration;
     private SolidCache templateCache = CacheBuilder.getOrCreateCache(Constants.KEY_TEMPLATE_CACHE);
+    private String contentType;
 
-    public TemplateBuilder(Configuration configuration) {
+    public TemplateResolver(SolidConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -22,12 +23,25 @@ public class TemplateBuilder {
      * @param source
      * @return
      */
-    public Template bulidTemplate(String source) {
+    public Template resolve(String source) {
         Template template = (Template) templateCache.get(source);
         if (template == null) {
             template = new Template(this.configuration,source);
+            template.setContentType(this.contentType);
             templateCache.cache(source,template,Constants.KEY_TEMPLATE_TIMEOUT_MILLISECOND);
         }
         return template;
+    }
+
+    public void setPrefix(String prefix) {
+        this.configuration.getResourcesLoader().setPrefix(prefix);
+    }
+
+    public void setSuffix(String suffix) {
+        this.configuration.getResourcesLoader().setSuffix(suffix);
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

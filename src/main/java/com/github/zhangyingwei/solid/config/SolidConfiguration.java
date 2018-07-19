@@ -10,11 +10,11 @@ import com.github.zhangyingwei.solid.items.pipline.SolidMethod;
  * @author zhangyw
  * @date 2018/7/4
  */
-public class Configuration {
+public class SolidConfiguration {
     private SolidContext context;
     private SolidTemplateResourcesLoader resourcesLoader;
 
-    public Configuration(SolidTemplateResourcesLoader resourcesLoader) {
+    public SolidConfiguration(SolidTemplateResourcesLoader resourcesLoader) {
         this.context = new SolidContext();
         this.resourcesLoader = resourcesLoader;
         this.init();

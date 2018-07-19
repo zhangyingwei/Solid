@@ -1,6 +1,7 @@
 package com.github.zhangyingwei.solid.template;
 
-import com.github.zhangyingwei.solid.config.Configuration;
+import com.github.zhangyingwei.solid.common.Constants;
+import com.github.zhangyingwei.solid.config.SolidConfiguration;
 import com.github.zhangyingwei.solid.exception.SolidException;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.items.process.EndProcessBlock;
@@ -15,12 +16,13 @@ import java.util.List;
  * @date 2018/7/4
  */
 public class Template implements SolidTemplate {
-    private Configuration configuration;
+    private SolidConfiguration configuration;
     private TemplateParser templateParser;
     private String source;
+    private String contentType = Constants.CONTENT_TYPE;
     private List<Block> resultBlocks;
 
-    public Template(Configuration configuration,String source) {
+    public Template(SolidConfiguration configuration, String source) {
         this.configuration = configuration;
         this.templateParser = new TemplateParser(this.configuration.getContext());
         this.source = source;
@@ -33,7 +35,7 @@ public class Template implements SolidTemplate {
     private void init() {
         String content = this.configuration.getResourcesLoader().load(source);
         List<Block> blocks = this.templateParser.parse(content);
-        System.out.println(blocks);
+//        System.out.println(blocks);
         resultBlocks = new ArrayList<Block>();
         Iterator<Block> iterator = blocks.iterator();
         while (iterator.hasNext()) {
@@ -85,4 +87,11 @@ public class Template implements SolidTemplate {
         }
     }
 
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
 }
