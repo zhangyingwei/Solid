@@ -27,7 +27,9 @@ public class TemplateResolver {
         Template template = (Template) templateCache.get(source);
         if (template == null) {
             template = new Template(this.configuration,source);
-            template.setContentType(this.contentType);
+            if (this.contentType != null && this.contentType.length() > 0) {
+                template.setContentType(this.contentType);
+            }
             templateCache.cache(source,template,Constants.KEY_TEMPLATE_TIMEOUT_MILLISECOND);
         }
         return template;
