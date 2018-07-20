@@ -3,14 +3,12 @@ package com.github.zhangyingwei.solid.items.process;
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.common.SolidUtils;
-import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author zhangyw
@@ -44,6 +42,9 @@ public class ForProcessBlock extends ProcessBlock {
 
     @Override
     public SolidResult render() {
+        if (!flag) {
+            return new StringResult("");
+        }
         SolidResult<Object> sourcesResult = SolidUtils.getFromPlaceholderOrNot(super.context, sourcesName);
         this.sources = sourcesResult.getResult();
         List<SolidResult> childs = new ArrayList<SolidResult>();
@@ -51,14 +52,14 @@ public class ForProcessBlock extends ProcessBlock {
             Collection collection = (Collection) this.sources;
             for (Object object : collection) {
                 context.bindArgs(this.itemName, object);
-                childs.addAll(super.childsResult());
+                childs.addAll(super.childsResult(true));
                 context.unbindArgs(this.itemName);
             }
         } else {
             Object[] objects = (Object[]) this.sources;
             for (Object object : objects) {
                 context.bindArgs(this.itemName, object);
-                childs.addAll(super.childsResult());
+                childs.addAll(super.childsResult(true));
                 context.unbindArgs(this.itemName);
             }
         }

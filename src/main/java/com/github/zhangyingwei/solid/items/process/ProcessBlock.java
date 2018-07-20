@@ -18,14 +18,21 @@ public abstract class ProcessBlock implements Block {
     protected String topMark;
     protected List<Block> childBlocks = new ArrayList<Block>();
     protected SolidContext context;
+    protected boolean flag = true;
 
     public ProcessBlock(String topMark,SolidContext context) {
         this.topMark = topMark;
         this.context = context;
     }
 
-    protected List<SolidResult> childsResult() {
-        return childBlocks.stream().map(child -> child.render()).collect(Collectors.toList());
+    protected List<SolidResult> childsResult(boolean iftrue) {
+        return childBlocks.stream().map(child -> {
+            if (child instanceof ElsIFProcessBlock || child instanceof ElseProcessBlock) {
+                return child.setFlag(!iftrue).render();
+            } else {
+                return child.setFlag(iftrue).render();
+            }
+        }).collect(Collectors.toList());
     }
 
     public void addChildBlock(Block block) {
@@ -42,6 +49,12 @@ public abstract class ProcessBlock implements Block {
 
     public Block setTag(String tag) {
         this.tag = tag;
+        return this;
+    }
+
+    @Override
+    public Block setFlag(boolean flag) {
+        this.flag = flag;
         return this;
     }
 

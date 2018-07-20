@@ -2,14 +2,10 @@ package com.github.zhangyingwei.solid.template;
 
 import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.config.SolidConfiguration;
-import com.github.zhangyingwei.solid.exception.SolidException;
 import com.github.zhangyingwei.solid.items.Block;
-import com.github.zhangyingwei.solid.items.process.EndProcessBlock;
-import com.github.zhangyingwei.solid.items.process.ProcessBlock;
+import com.github.zhangyingwei.solid.items.process.*;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author zhangyw
@@ -36,13 +32,26 @@ public class Template implements SolidTemplate {
         String content = this.configuration.getResourcesLoader().load(source);
         List<Block> blocks = this.templateParser.parse(content);
 //        System.out.println(blocks);
-        resultBlocks = new ArrayList<Block>();
-        Iterator<Block> iterator = blocks.iterator();
-        while (iterator.hasNext()) {
-            Block tempBlock = iterator.next();
-            iterator.remove();
+        this.resultBlocks = new ArrayList<Block>();
+
+        Stack<Block> blockStack = new Stack<Block>();
+        Collections.reverse(blocks);
+        blockStack.addAll(blocks);
+
+//        ListIterator<Block> iterator = blocks.listIterator();
+//        while (iterator.hasNext()) {
+//            Block tempBlock = iterator.next();
+//            iterator.remove();
+//            if (tempBlock instanceof ProcessBlock) {
+//                this.bulidProcessBlock((ProcessBlock) tempBlock, iterator);
+//            }
+//            resultBlocks.add(tempBlock);
+//        }
+//
+      while (!blockStack.empty()) {
+            Block tempBlock = blockStack.pop();
             if (tempBlock instanceof ProcessBlock) {
-                this.bulidProcessBlock((ProcessBlock) tempBlock, iterator);
+                this.bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
             }
             resultBlocks.add(tempBlock);
         }
@@ -62,28 +71,72 @@ public class Template implements SolidTemplate {
         return resultText.toString();
     }
 
-    private void bulidProcessBlock(ProcessBlock rootBlock, Iterator<Block> iterator) {
-        while (iterator.hasNext()) {
-            Block tempBlock = iterator.next();
-            iterator.remove();
+//    private void bulidProcessBlock(ProcessBlock rootBlock, ListIterator<Block> iterator, List<Block> blocks) {
+//        while (iterator.hasNext()) {
+//            Block tempBlock = iterator.next();
+//            iterator.remove();
+//            if (tempBlock instanceof ProcessBlock) {
+//                if (tempBlock instanceof EndProcessBlock) {
+//                    EndProcessBlock end = (EndProcessBlock) tempBlock;
+//                    if (end.isEndOf(rootBlock)) {
+//                        break;
+//                    } else {
+//                        iterator.add(end);
+//                        break;
+//                    }
+//                } else {
+//                    bulidProcessBlock((ProcessBlock) tempBlock, iterator, blocks);
+//                    rootBlock.addChildBlock(tempBlock);
+//                }
+//            } else {
+//                rootBlock.addChildBlock(tempBlock);
+//            }
+//        }
+//    }
+
+//    EndProcessBlock endBlock = null;
+//    private void bulidProcessBlock(ProcessBlock rootBlock, ListIterator<Block> iterator) {
+//        while (iterator.hasNext()) {
+//            Block tempBlock = iterator.next();
+//            iterator.remove();
+//            if (tempBlock instanceof ProcessBlock) {
+//                if (tempBlock instanceof EndProcessBlock) {
+////                    EndProcessBlock end = (EndProcessBlock) tempBlock;
+//                    endBlock = (EndProcessBlock) tempBlock;
+//                    if (endBlock!=null && endBlock.isEndOf(rootBlock)) {
+//                        endBlock = null;
+//                        break;
+//                    } else {
+////                        iterator.add(end);
+//                        break;
+//                    }
+//                }
+//                bulidProcessBlock((ProcessBlock) tempBlock,iterator);
+//            }
+//            if (endBlock == null) {
+//                rootBlock.addChildBlock(tempBlock);
+//            } else {
+//                iterator.add(tempBlock);
+//            }
+//        }
+//    }
+
+    private void bulidProcessBlock(ProcessBlock rootBlock, Stack<Block> blockStack) {
+        while (!blockStack.empty()) {
+            Block tempBlock = blockStack.pop();
             if (tempBlock instanceof ProcessBlock) {
                 if (tempBlock instanceof EndProcessBlock) {
                     EndProcessBlock end = (EndProcessBlock) tempBlock;
                     if (end.isEndOf(rootBlock)) {
                         break;
+                    } else {
+                        blockStack.push(end);
+                        break;
                     }
-                } else {
-                    bulidProcessBlock((ProcessBlock) tempBlock, iterator);
                 }
+                bulidProcessBlock((ProcessBlock) tempBlock,blockStack);
             }
             rootBlock.addChildBlock(tempBlock);
-        }
-        if (!iterator.hasNext()) {
-            try {
-                throw new SolidException("the end of " + rootBlock + " is not found");
-            } catch (SolidException e) {
-                e.printStackTrace();
-            }
         }
     }
 

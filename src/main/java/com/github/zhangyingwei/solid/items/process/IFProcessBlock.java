@@ -3,6 +3,7 @@ package com.github.zhangyingwei.solid.items.process;
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.common.SolidUtils;
+import com.github.zhangyingwei.solid.result.NumResult;
 import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
 import com.github.zhangyingwei.solid.result.WowResult;
@@ -10,10 +11,7 @@ import com.github.zhangyingwei.solid.template.TemplateParser;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author zhangyw
@@ -24,6 +22,7 @@ public class IFProcessBlock extends ProcessBlock {
     private String rightMark = Constants.PROCESS_RIGHTMARK;
     private List<IfItem> ifitems = new ArrayList<IfItem>();
     private List<IfControlItem> controlItems = new ArrayList<IfControlItem>();
+    private List<ElsIFProcessBlock> elseIfBlock = new ArrayList<ElsIFProcessBlock>();
 
     public IFProcessBlock(String topMark, SolidContext context) {
         super(SolidUtils.removeExtraSpaces(topMark.trim()).toLowerCase(), context);
@@ -59,8 +58,8 @@ public class IFProcessBlock extends ProcessBlock {
     @Override
     public SolidResult render() {
         StringBuilder result = new StringBuilder("");
-        if (this.valid()) {
-            super.childsResult().stream().map(item -> item.getResult()).forEach(child -> {
+        if (super.flag) {
+            super.childsResult(this.valid()).stream().map(item -> item.getResult()).forEach(child -> {
                 result.append(child.toString());
             });
         }
@@ -72,12 +71,20 @@ public class IFProcessBlock extends ProcessBlock {
      * @return
      */
     private boolean valid() {
-        IfItemCompare firstItem = this.ifitems.remove(0).valid();
+        IfItemCompare firstItem = this.ifitems.get(0).valid();
         for (int i = 0; i < controlItems.size(); i++) {
             IfControlItem control = controlItems.get(i);
-            firstItem = control.compare(firstItem, ifitems.get(i).valid());
+            firstItem = control.compare(firstItem, ifitems.get(i + 1).valid());
         }
         return firstItem.flag;
+    }
+
+    /**
+     * add else if block
+     * @param elseBlock
+     */
+    public void addElseIfBlock(ElsIFProcessBlock elseBlock) {
+        this.elseIfBlock.add(elseBlock);
     }
 
     /**
@@ -124,7 +131,6 @@ public class IFProcessBlock extends ProcessBlock {
 
         public IfItem(String template) {
             super(template.trim());
-            this.formate();
         }
 
         /**
@@ -166,6 +172,7 @@ public class IFProcessBlock extends ProcessBlock {
          */
         //TODO
         IfItemCompare valid() {
+            this.formate();
             if (second == null) {
                 if (first instanceof WowResult) {
                     return new IfItemCompare(false);
@@ -175,7 +182,7 @@ public class IFProcessBlock extends ProcessBlock {
             } else if (first instanceof SolidResult && second instanceof SolidResult) {
                 if (first instanceof WowResult || second instanceof WowResult) {
                     return new IfItemCompare(false);
-                }else if (SolidUtils.isNum(this.getFirst().getResult().toString()) && SolidUtils.isNum(this.getSecond().getResult().toString())) {
+                }else if (this.getFirst() instanceof NumResult || this.getSecond() instanceof NumResult) {
                     BigDecimal bfrist = new BigDecimal(this.getFirst().getResult().toString());
                     BigDecimal bsecond = new BigDecimal(this.getSecond().getResult().toString());
                     if (this.symbol.equals("==")) {

@@ -10,13 +10,23 @@ import com.github.zhangyingwei.solid.result.StringResult;
  */
 public class TextBlock implements Block {
     private String text;
+    private boolean flag = true;
 
     public TextBlock(String text) {
         this.text = text;
     }
 
     @Override
+    public Block setFlag(boolean flag) {
+        this.flag = flag;
+        return this;
+    }
+
+    @Override
     public SolidResult render() {
+        if (!flag) {
+            return new StringResult("");
+        }
         return new StringResult(text);
     }
 

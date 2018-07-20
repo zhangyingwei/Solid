@@ -7,5 +7,6 @@ import com.github.zhangyingwei.solid.result.SolidResult;
  * @date 2018/7/3
  */
 public interface Block {
+    Block setFlag(boolean flag);
     SolidResult render();
 }

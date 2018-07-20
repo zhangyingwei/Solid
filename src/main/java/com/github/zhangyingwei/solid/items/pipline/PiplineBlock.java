@@ -39,6 +39,11 @@ public class PiplineBlock implements Block {
     }
 
     @Override
+    public Block setFlag(boolean flag) {
+        return this;
+    }
+
+    @Override
     public SolidResult render() {
         SolidMethod method = this.context.getMethod(methodName);
         Object result = null;

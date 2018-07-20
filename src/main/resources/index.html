@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <style type="text/css">
+        .hello{
+            background-color: azure;
+            padding: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<p class="hello">
+    Hello {{username | append " , welcome to solid!" }}
+</p>
+
+<div class="container">
+    <table border="1">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Age</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{user.name}}</td>
+                {% if user.age == 5 %}
+                    <td>binggo</td>
+                {% else %}
+                    <td>{{user.age}}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

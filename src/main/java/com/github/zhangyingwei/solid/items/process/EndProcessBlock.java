@@ -1,6 +1,7 @@
 package com.github.zhangyingwei.solid.items.process;
 
 import com.github.zhangyingwei.solid.SolidContext;
+import com.github.zhangyingwei.solid.exception.SolidException;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
@@ -22,7 +23,7 @@ public class EndProcessBlock extends ProcessBlock {
 
     @Override
     public SolidResult render() {
-        return new StringResult(this.endMark);
+        return new StringResult("");
     }
 
     public boolean isEndOf(ProcessBlock processBlock) {

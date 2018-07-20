@@ -22,4 +22,7 @@ public class Constants {
 
     public static final String TAG_IF = "if";
     public static final String TAG_IF_END = "endif";
+    public static final String TAG_ELSE_IF = "elsif";
+    public static final String TAG_ELSIF_END = "end of ensif hahahah$#%#$%";
+    public static final String TAG_ELSE = "else";
 }

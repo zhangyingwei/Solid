@@ -57,6 +57,6 @@ public class ObjectBlockTest {
         ObjectBlock objectBlock = new ObjectBlock(context, template);
         String result = objectBlock.render().getResult();
         System.out.println(result);
-//        Assert.assertEquals(result, "xiaoming");
+        Assert.assertEquals(Integer.parseInt(result), 8);
     }
 }

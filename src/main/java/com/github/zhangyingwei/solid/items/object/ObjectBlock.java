@@ -24,14 +24,25 @@ public class ObjectBlock implements Block {
     private String rightMark = Constants.OBJ_RIGHTMARK;
     private String template;
     private SolidContext context;
+    private boolean flag = true;
 
     public ObjectBlock(SolidContext context, String template) {
         this.template = template;
         this.context = context;
     }
 
+
+    @Override
+    public Block setFlag(boolean flag) {
+        this.flag = flag;
+        return this;
+    }
+
     @Override
     public SolidResult<String> render() {
+        if (!flag) {
+            return new StringResult("");
+        }
         String templatContent = template.trim().substring(leftMark.length()).substring(0, template.length() - leftMark.length() - rightMark.length());
         List<String> items = Arrays.stream(templatContent.trim().split("\\|")).map(item -> item.trim()).collect(Collectors.toList());
         String templateObject = items.remove(0);

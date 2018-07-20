@@ -1,22 +1,14 @@
 package com.github.zhangyingwei.solid.common;
 
 import com.github.zhangyingwei.solid.SolidContext;
-import com.github.zhangyingwei.solid.demo.User;
 import com.github.zhangyingwei.solid.items.Block;
-import com.github.zhangyingwei.solid.items.process.EndProcessBlock;
-import com.github.zhangyingwei.solid.items.process.ForProcessBlock;
-import com.github.zhangyingwei.solid.items.process.IFProcessBlock;
+import com.github.zhangyingwei.solid.items.process.*;
 import com.github.zhangyingwei.solid.items.text.TextBlock;
-import com.github.zhangyingwei.solid.result.ObjectResult;
-import com.github.zhangyingwei.solid.result.SolidResult;
-import com.github.zhangyingwei.solid.result.StringResult;
-import com.github.zhangyingwei.solid.result.WowResult;
+import com.github.zhangyingwei.solid.result.*;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -100,8 +92,12 @@ public class SolidUtils {
             return new EndProcessBlock(template,context).setTag(Constants.TAG_FOR_END);
         } else if (command.startsWith(Constants.TAG_IF)) {
             return new IFProcessBlock(template, context);
-        } else if (command.startsWith(Constants.TAG_IF_END)){
-            return new EndProcessBlock(template,context).setTag(Constants.TAG_IF_END);
+        } else if (command.startsWith(Constants.TAG_ELSE_IF)) {
+            return new ElsIFProcessBlock(template, context);
+        } else if (command.startsWith(Constants.TAG_ELSE)) {
+            return new ElseProcessBlock(template, context);
+        } else if (command.startsWith(Constants.TAG_IF_END)) {
+            return new EndProcessBlock(template, context).setTag(Constants.TAG_IF_END);
         }
         return new TextBlock("not find process block , return a text block");
     }
@@ -139,6 +135,8 @@ public class SolidUtils {
     public static SolidResult getFromPlaceholderOrNot(SolidContext context,String template) {
         if (template == null || template.length() == 0) {
             return new StringResult("");
+        }else if (isNum(template.trim())){
+            return new NumResult(template);
         }else if (isPlaceholder(template)) {
             return getObjectFromContext(template, context);
         } else {
