@@ -18,21 +18,19 @@ import java.util.List;
  * @date 2018/7/3
  */
 public class IFProcessBlock extends ProcessBlock {
-    private String leftMark = Constants.PROCESS_LEFTMARK;
-    private String rightMark = Constants.PROCESS_RIGHTMARK;
     private List<IfItem> ifitems = new ArrayList<IfItem>();
     private List<IfControlItem> controlItems = new ArrayList<IfControlItem>();
     private List<ElsIFProcessBlock> elseIfBlock = new ArrayList<ElsIFProcessBlock>();
 
     public IFProcessBlock(String topMark, SolidContext context) {
-        super(SolidUtils.removeExtraSpaces(topMark.trim()).toLowerCase(), context);
+        super(SolidUtils.formateAsNomal(topMark).toLowerCase(), context);
         super.tag = Constants.TAG_IF;
         super.endTag = Constants.TAG_IF_END;
         this.splitTemplateToIfItems();
     }
 
     private void splitTemplateToIfItems() {
-        String itemsLine = super.topMark.substring(this.leftMark.length(), super.topMark.length() - this.rightMark.length());
+        String itemsLine = SolidUtils.subMarkToTemplate(super.topMark,super.leftMark,super.rightMark);
         TemplateParser.TemplateFlow templateFlow = new TemplateParser.TemplateFlow(itemsLine);
         while (templateFlow.isNotEmpty()) {
             if (templateFlow.startWith("and")) {

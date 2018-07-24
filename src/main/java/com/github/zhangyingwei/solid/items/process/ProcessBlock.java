@@ -1,6 +1,7 @@
 package com.github.zhangyingwei.solid.items.process;
 
 import com.github.zhangyingwei.solid.SolidContext;
+import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
 
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
  * @date 2018/7/3
  */
 public abstract class ProcessBlock implements Block {
+    protected String leftMark = Constants.PROCESS_LEFTMARK;
+    protected String rightMark = Constants.PROCESS_RIGHTMARK;
     protected String tag;
     protected String endTag;
     protected String topMark;
@@ -47,6 +50,10 @@ public abstract class ProcessBlock implements Block {
         return tag;
     }
 
+    public void setEndTag(String endTag) {
+        this.endTag = endTag;
+    }
+
     public Block setTag(String tag) {
         this.tag = tag;
         return this;
@@ -61,5 +68,9 @@ public abstract class ProcessBlock implements Block {
     @Override
     public String toString() {
         return "Process(" + topMark + ")";
+    }
+
+    public boolean isNoEndBlock(){
+        return Constants.TAG_NO_END.equals(this.endTag);
     }
 }

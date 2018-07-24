@@ -11,11 +11,14 @@ import com.github.zhangyingwei.solid.config.SolidConfiguration;
  */
 public class TemplateResolver {
     private SolidConfiguration configuration;
-    private SolidCache templateCache = CacheBuilder.getOrCreateCache(Constants.KEY_TEMPLATE_CACHE);
+    private SolidCache templateCache;
     private String contentType;
 
     public TemplateResolver(SolidConfiguration configuration) {
         this.configuration = configuration;
+        if (Constants.TEMPLATE_CACHE) {
+            this.templateCache = CacheBuilder.getOrCreateCache(Constants.KEY_TEMPLATE_CACHE);
+        }
     }
 
     /**
@@ -24,12 +27,17 @@ public class TemplateResolver {
      * @return
      */
     public Template resolve(String source) {
-        Template template = (Template) templateCache.get(source);
+        Template template = null;
+        if (Constants.TEMPLATE_CACHE) {
+            template = (Template) templateCache.get(source);
+        }
         if (template == null) {
             template = new Template(this.configuration,source);
             if (this.contentType != null && this.contentType.length() > 0) {
                 template.setContentType(this.contentType);
             }
+        }
+        if (Constants.TEMPLATE_CACHE) {
             templateCache.cache(source,template,Constants.KEY_TEMPLATE_TIMEOUT_MILLISECOND);
         }
         return template;

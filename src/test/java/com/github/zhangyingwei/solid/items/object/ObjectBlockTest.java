@@ -39,7 +39,7 @@ public class ObjectBlockTest {
         context.bindArgs("user", user);
         context.bindArgs("user1", user1);
         context.bindMethod("append",new AppendSolidMethod());
-        String template = "{{ user.name | append \" === \" | append user1.name}}";
+        String template = "{{ user.name | append: \" === \" | append: user1.name}}";
         ObjectBlock objectBlock = new ObjectBlock(context, template);
         String result = objectBlock.render().getResult();
         System.out.println(result);
@@ -58,5 +58,16 @@ public class ObjectBlockTest {
         String result = objectBlock.render().getResult();
         System.out.println(result);
         Assert.assertEquals(Integer.parseInt(result), 8);
+    }
+
+    @Test
+    public void booleanTest() throws Exception {
+        SolidContext context = new SolidContext();
+        String template = "{{ has }}";
+        context.bindArgs("has", false);
+        ObjectBlock objectBlock = new ObjectBlock(context, template);
+        String result = objectBlock.render().getResult();
+        System.out.println(result);
+        Assert.assertEquals(result, "false");
     }
 }

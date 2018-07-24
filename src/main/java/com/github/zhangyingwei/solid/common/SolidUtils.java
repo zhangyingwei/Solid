@@ -1,6 +1,8 @@
 package com.github.zhangyingwei.solid.common;
 
 import com.github.zhangyingwei.solid.SolidContext;
+import com.github.zhangyingwei.solid.exception.SolidException;
+import com.github.zhangyingwei.solid.exception.SolidParamNotFoundException;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.items.process.*;
 import com.github.zhangyingwei.solid.items.text.TextBlock;
@@ -50,7 +52,7 @@ public class SolidUtils {
             if (((Map) object).containsKey(key)) {
                 return new ObjectResult(((Map) object).get(key));
             } else {
-                return new WowResult();
+                return new WowResult(key);
             }
         } else {
             return getFromObject(object, key);
@@ -72,12 +74,12 @@ public class SolidUtils {
             Method method = clazz.getMethod(methodName);
             Object result = method.invoke(object);
             if (null == result) {
-                return new WowResult();
+                return new WowResult(key);
             }
             return new StringResult<>(result.toString());
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
-            return new WowResult();
+            return new WowResult(key);
         }
     }
 
@@ -98,6 +100,10 @@ public class SolidUtils {
             return new ElseProcessBlock(template, context);
         } else if (command.startsWith(Constants.TAG_IF_END)) {
             return new EndProcessBlock(template, context).setTag(Constants.TAG_IF_END);
+        } else if (command.startsWith(Constants.TAG_ASSIGN)) {
+            return new AssignProcessBlock(template, context);
+        } else if (command.startsWith(Constants.TAG_INCLUDE)) {
+            return new IncludeProcessBlock(template, context);
         }
         return new TextBlock("not find process block , return a text block");
     }
@@ -107,11 +113,15 @@ public class SolidUtils {
      * @param content
      * @return
      */
-    public static String removeExtraSpaces(String content) {
+    private static String removeExtraSpaces(String content) {
         while (content.indexOf("  ") >= 0) {
             content = content.replaceAll("  ", " ");
         }
         return content;
+    }
+
+    public static String formateAsNomal(String content) {
+        return removeExtraSpaces(content.trim());
     }
 
     /**
@@ -149,7 +159,7 @@ public class SolidUtils {
      * @return
      */
     public static Boolean isNum(String text) {
-        Pattern pattern = Pattern.compile("[0-9]*");
+        Pattern pattern = Pattern.compile("[+\\-]?[0-9]*[.]?[0-9]*?");
         return pattern.matcher(text).matches();
     }
 
@@ -187,5 +197,42 @@ public class SolidUtils {
 
     public static void main(String[] args) {
         System.out.println(readContentFromFile("src/main/resources/test.html",Constants.CHAR_SET_UTF_8));
+    }
+
+    /**
+     * {% template %} => template
+     * @param mark
+     * @param leftMark
+     * @param rightMark
+     * @return
+     */
+    public static String subMarkToTemplate(String mark, String leftMark, String rightMark) {
+        return mark.substring(leftMark.length(), (mark.length() - rightMark.length()));
+    }
+
+    public static void checkTypeAndThrow(Object value) {
+        if (value instanceof WowResult) {
+            WowResult wow = (WowResult) value;
+            try {
+                throw new SolidParamNotFoundException(wow.getKey());
+            } catch (SolidParamNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void checkType(Object value) throws SolidException {
+        if (value instanceof WowResult) {
+            WowResult wow = (WowResult) value;
+            throw new SolidException(wow.getKey());
+        }
+    }
+
+    public static Boolean checkTypeIf(Object value) throws SolidException {
+        return value instanceof WowResult;
+    }
+
+    public static String bulidObjectTemplateFromTemplateContent(String value) {
+        return Constants.OBJ_LEFTMARK + value + Constants.OBJ_RIGHTMARK;
     }
 }

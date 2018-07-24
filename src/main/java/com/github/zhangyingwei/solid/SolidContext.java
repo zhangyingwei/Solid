@@ -1,5 +1,6 @@
 package com.github.zhangyingwei.solid;
 
+import com.github.zhangyingwei.solid.config.SolidTemplateResourcesLoader;
 import com.github.zhangyingwei.solid.items.pipline.SolidMethod;
 
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class SolidContext {
     private Map<String, Object> params = new HashMap<String, Object>();
     private Map<String, SolidMethod> methodMap = new HashMap<String,SolidMethod>();
+    private SolidTemplateResourcesLoader resourcesLoader;
 
     public void bindArgs(String key, Object value) {
         params.put(key, value);
@@ -31,5 +33,13 @@ public class SolidContext {
 
     public void unbindArgs(String itemName) {
         this.params.remove(itemName);
+    }
+
+    public void setResourcesLoader(SolidTemplateResourcesLoader resourcesLoader) {
+        this.resourcesLoader = resourcesLoader;
+    }
+
+    public SolidTemplateResourcesLoader getResourcesLoader() {
+        return resourcesLoader;
     }
 }

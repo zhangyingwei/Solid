@@ -5,5 +5,5 @@ package com.github.zhangyingwei.solid.items.pipline;
  * @date 2018/7/3
  */
 public interface SolidMethod<U> {
-    <T> T doFormate(U content,String args);
+    <T> T doFormate(U content,Object args);
 }

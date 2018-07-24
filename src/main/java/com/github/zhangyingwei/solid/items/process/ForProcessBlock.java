@@ -16,9 +16,6 @@ import java.util.List;
  * for  控制流
  */
 public class ForProcessBlock extends ProcessBlock {
-
-    private String leftMark = Constants.PROCESS_LEFTMARK;
-    private String rightMark = Constants.PROCESS_RIGHTMARK;
     private String itemName;
     private String sourcesName;
     private Object sources;
@@ -31,10 +28,7 @@ public class ForProcessBlock extends ProcessBlock {
     }
 
     private void getNames(String topMark) {
-        String forName = topMark.trim().substring(
-                Constants.PROCESS_LEFTMARK.length(),
-                topMark.trim().length() - Constants.PROCESS_RIGHTMARK.length()
-        ).trim();
+        String forName = SolidUtils.subMarkToTemplate(super.topMark, super.leftMark, super.rightMark).trim();
         String[] itemAndObject = forName.replaceFirst("for", "").split(" in ");
         this.itemName = itemAndObject[0].trim();
         this.sourcesName = itemAndObject[1].trim();

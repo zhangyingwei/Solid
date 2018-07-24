@@ -23,7 +23,7 @@ public class TemplateTest {
         user.setAge(123);
         SolidConfiguration configuration = new SolidConfiguration(new StringTemplateResourceLoader());
         TemplateResolver builder = new TemplateResolver(configuration);
-        Template template = builder.resolve("Hello my name is {{ user.name | append \" wang \" }} and my age is {{user.age }} and my names length is {{ user.name | length }}. and my hobbies have {% for hobby in hobbies %} {{ hobby }} {% endfor %}. haha {{hobbies}} ");
+        Template template = builder.resolve("Hello my name is {{ user.name | append: \" wang \" }} and my age is {{user.age }} and my names length is {{ user.name | length }}. and my hobbies have {% for hobby in hobbies %} {{ hobby }} {% endfor %}. haha {{hobbies}} ");
         template.bind("user", user);
         template.bind("hobbies",new ArrayList<String>(){
             {
@@ -43,7 +43,8 @@ public class TemplateTest {
         Template template = resolver.resolve("test");
         template.bind("username", "admin");
         template.bind("password","密码");
-        System.out.println(template.render());
+        template.render();
+//        System.out.println(template.render());
     }
 
     @Test
@@ -53,7 +54,7 @@ public class TemplateTest {
         resolver.setSuffix(".html");
         Template template = resolver.resolve("index");
         template.bind("username", "张英伟");
-        template.bind("password","123456");
+        template.bind("password","123456password");
         List<User> users = new ArrayList<User>();
         for (int i = 0; i < 10; i++) {
             User user = new User();
@@ -62,6 +63,7 @@ public class TemplateTest {
             users.add(user);
         }
         template.bind("users",users);
-        System.out.println(template.render());
+        template.render();
+//        System.out.println(template.render());
     }
 }

@@ -1,10 +1,12 @@
 package com.github.zhangyingwei.solid.config;
 
 import com.github.zhangyingwei.solid.SolidContext;
-import com.github.zhangyingwei.solid.items.pipline.AppendSolidMethod;
-import com.github.zhangyingwei.solid.items.pipline.LengthSolidMethod;
-import com.github.zhangyingwei.solid.items.pipline.RangeSolidMethod;
-import com.github.zhangyingwei.solid.items.pipline.SolidMethod;
+import com.github.zhangyingwei.solid.common.Constants;
+import com.github.zhangyingwei.solid.items.pipline.*;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author zhangyw
@@ -12,12 +14,48 @@ import com.github.zhangyingwei.solid.items.pipline.SolidMethod;
  */
 public class SolidConfiguration {
     private SolidContext context;
-    private SolidTemplateResourcesLoader resourcesLoader;
 
     public SolidConfiguration(SolidTemplateResourcesLoader resourcesLoader) {
         this.context = new SolidContext();
-        this.resourcesLoader = resourcesLoader;
+        this.context.setResourcesLoader(resourcesLoader);
         this.init();
+    }
+
+    public SolidConfiguration(SolidContext context) {
+        this.context = context;
+    }
+
+    public SolidConfiguration loadConfig(String filePath) {
+        Properties configProperties = this.loadConfigProperties(filePath);
+        return loadConfig(configProperties);
+    }
+
+    private SolidConfiguration loadConfig(Properties configProperties) {
+        this.fillConfigOfConstants(configProperties,"template.suffix",Constants.TEMPLATE_SUFFIX);
+        this.fillConfigOfConstants(configProperties,"template.prefix",Constants.TEMPLATE_PREFIX);
+        return this;
+    }
+
+    /**
+     * fill config if exits in config properties
+     * @param configProperties
+     * @param key
+     * @param constants
+     */
+    private void fillConfigOfConstants(Properties configProperties, String key, String constants) {
+        if (configProperties.containsKey(key)) {
+            constants = configProperties.getProperty(key);
+        }
+    }
+
+    private Properties loadConfigProperties(String filePath) {
+        Properties configProperties = new Properties();
+        try {
+            configProperties.load(new FileReader(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return configProperties;
     }
 
     /**
@@ -25,8 +63,21 @@ public class SolidConfiguration {
      */
     private void init() {
         this.context.bindMethod("append", new AppendSolidMethod());
+        this.context.bindMethod("concat", new ConcatSolidMethod());
         this.context.bindMethod("length", new LengthSolidMethod());
         this.context.bindMethod("range", new RangeSolidMethod());
+        this.context.bindMethod("abs", new AbsSolidMethod());
+        this.context.bindMethod("capitalize", new CapitalizeSolidMethod());
+        this.context.bindMethod("ceil", new CeilSolidMethod());
+        this.context.bindMethod("split", new SplitSolidMethod());
+        this.context.bindMethod("date", new DateSolidMethod());
+        this.context.bindMethod("default", new DefaultSolidMethod());
+        this.context.bindMethod("times", new TimesSolidMethod());
+        this.context.bindMethod("upcase", new UpcaseSolidMethod());
+        this.context.bindMethod("url_encode", new UrlEncodeSolidMethod());
+        this.context.bindMethod("url_decode", new UrlDecodeSolidMethod());
+        this.context.bindMethod("uniq", new UniqSolidMethod());
+        this.context.bindMethod("join", new JoinSolidMethod());
     }
 
     public SolidContext getContext() {
@@ -34,7 +85,7 @@ public class SolidConfiguration {
     }
 
     public SolidTemplateResourcesLoader getResourcesLoader() {
-        return resourcesLoader;
+        return this.context.getResourcesLoader();
     }
 
     public void bindMethod(String key, SolidMethod method) {

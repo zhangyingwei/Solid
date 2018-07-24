@@ -39,7 +39,10 @@ public class Template implements SolidTemplate {
         while (!blockStack.empty()) {
             Block tempBlock = blockStack.pop();
             if (tempBlock instanceof ProcessBlock) {
-                this.bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
+                ProcessBlock processBlock = (ProcessBlock) tempBlock;
+                if (!processBlock.isNoEndBlock()) {
+                    this.bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
+                }
             }
             resultBlocks.add(tempBlock);
         }
@@ -68,14 +71,19 @@ public class Template implements SolidTemplate {
         while (!blockStack.empty()) {
             Block tempBlock = blockStack.pop();
             if (tempBlock instanceof ProcessBlock) {
+                ProcessBlock processBlock = (ProcessBlock) tempBlock;
                 if (tempBlock instanceof EndProcessBlock) {
-                    EndProcessBlock end = (EndProcessBlock) tempBlock;
+                    EndProcessBlock end = (EndProcessBlock) processBlock;
                     if (end.isEndOf(rootBlock)) {
                         break;
                     } else {
                         blockStack.push(end);
                         break;
                     }
+                }
+                if (processBlock.isNoEndBlock()) {
+                    rootBlock.addChildBlock(tempBlock);
+                    break;
                 }
                 bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
             }

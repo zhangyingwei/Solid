@@ -16,12 +16,12 @@ public class PiplineBlock implements Block {
     private final SolidContext context;
     private String methodName;
     private String arg;
-    protected String baseString;
+    protected Object input;
 
     public PiplineBlock(String methodName, SolidContext context) {
-        this.methodName = this.getMethod(methodName);
+        this.methodName = this.getMethod(methodName).trim();
         String args = methodName.replaceAll(this.methodName,"");
-        if (null == args || args.trim().length() > 0) {
+        if (this.methodName.endsWith(":")) {
             this.arg = args.trim();
         } else {
             this.arg = null;
@@ -33,8 +33,8 @@ public class PiplineBlock implements Block {
         return methodName.trim().split(" ")[0];
     }
 
-    public PiplineBlock baseString(String baseString) {
-        this.baseString = baseString;
+    public PiplineBlock input(Object input) {
+        this.input = input;
         return this;
     }
 
@@ -45,10 +45,10 @@ public class PiplineBlock implements Block {
 
     @Override
     public SolidResult render() {
-        SolidMethod method = this.context.getMethod(methodName);
+        SolidMethod method = this.context.getMethod(this.getRealMethodName(methodName));
         Object result = null;
         if (null != method) {
-            result = method.doFormate(this.baseString, SolidUtils.getFromPlaceholderOrNot(context,this.arg).getResult().toString());
+            result = method.doFormate(this.input, SolidUtils.getFromPlaceholderOrNot(context,this.arg).getResult());
         } else {
             try {
                 throw new SolidMethodNotFoundException(methodName);
@@ -57,8 +57,15 @@ public class PiplineBlock implements Block {
             }
         }
         if (null == result) {
-            return new WowResult();
+            return new WowResult(this.input + "");
         }
         return new StringResult(result);
+    }
+
+    private String getRealMethodName(String methodName) {
+        if (methodName.endsWith(":")) {
+            return methodName.substring(0, methodName.length() - 1);
+        }
+        return methodName;
     }
 }

@@ -23,12 +23,16 @@ public class ObjectBlock implements Block {
     private String leftMark = Constants.OBJ_LEFTMARK;
     private String rightMark = Constants.OBJ_RIGHTMARK;
     private String template;
+    private String templateContent;
     private SolidContext context;
     private boolean flag = true;
+    private String key;
+    private List<PiplineBlock> piplines;
 
     public ObjectBlock(SolidContext context, String template) {
         this.template = template;
         this.context = context;
+        this.init();
     }
 
 
@@ -38,30 +42,37 @@ public class ObjectBlock implements Block {
         return this;
     }
 
+    private void init() {
+        this.template = SolidUtils.formateAsNomal(this.template);
+        this.templateContent = SolidUtils.subMarkToTemplate(template.trim(), leftMark, rightMark);
+        List<String> items = Arrays.stream(this.templateContent.split("\\|")).collect(Collectors.toList());
+        this.key = items.remove(0).trim();
+        this.piplines = this.bulidPipLines(items);
+    }
+
+    private List<PiplineBlock> bulidPipLines(List<String> items) {
+        return items.stream().map(item -> new PiplineBlock(item,context)).collect(Collectors.toList());
+    }
+
     @Override
     public SolidResult<String> render() {
+        return new StringResult(renderObject().getResult().toString());
+    }
+
+    public SolidResult renderObject() {
         if (!flag) {
             return new StringResult("");
         }
-        String templatContent = template.trim().substring(leftMark.length()).substring(0, template.length() - leftMark.length() - rightMark.length());
-        List<String> items = Arrays.stream(templatContent.trim().split("\\|")).map(item -> item.trim()).collect(Collectors.toList());
-        String templateObject = items.remove(0);
-        SolidResult result = SolidUtils.getFromPlaceholderOrNot(context, templateObject);
-        String objectValue = result.getResult().toString();
-        List<PiplineBlock> pipLineList = items.stream().map(item -> new PiplineBlock(item,context)).collect(Collectors.toList());
-        for (PiplineBlock piplineBlock : pipLineList) {
-            SolidResult pipLineResult = piplineBlock.baseString(objectValue).render();
-            if (pipLineResult instanceof WowResult) {
-                try {
-                    throw new SolidException("pipline execute error:" + piplineBlock);
-                } catch (SolidException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                objectValue = pipLineResult.getResult().toString();
-            }
+        return getResult();
+    }
+
+    private SolidResult getResult() {
+        SolidResult value = SolidUtils.getFromPlaceholderOrNot(this.context, this.key);
+        for (PiplineBlock piplineBlock : this.piplines) {
+            SolidResult pipLineResult = piplineBlock.input(value.getResult()).render();
+            value = pipLineResult;
         }
-        return new StringResult(objectValue);
+        return value;
     }
 
     @Override
