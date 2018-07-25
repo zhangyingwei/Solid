@@ -7,7 +7,7 @@ package com.github.zhangyingwei.solid.items.pipline;
  */
 public class UpcaseSolidMethod implements SolidMethod<String> {
     @Override
-    public String doFormate(String content, Object args) {
+    public String doFormate(String content, Object[] args) {
         return content.toUpperCase();
     }
 }

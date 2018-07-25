@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class DateSolidMethod implements SolidMethod<Object> {
     @Override
-    public String doFormate(Object content, Object args) {
+    public String doFormate(Object content, Object[] args) {
         Long timestamp = null;
         if (SolidUtils.isNum(content.toString())) {
             timestamp = Long.parseLong(content.toString());
@@ -21,7 +21,7 @@ public class DateSolidMethod implements SolidMethod<Object> {
         } else {
             timestamp = System.currentTimeMillis();
         }
-        String formater = (String) args;
+        String formater = (String) args[0];
         SimpleDateFormat format = new SimpleDateFormat(formater);
         return format.format(new Date(timestamp));
     }

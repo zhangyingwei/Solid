@@ -10,7 +10,7 @@ import java.util.List;
 public class RangeSolidMethod implements SolidMethod<Object> {
 
     @Override
-    public List doFormate(Object content, Object args) {
+    public List doFormate(Object content, Object[] args) {
         List<Integer> result = new ArrayList<Integer>();
         Integer total = (Integer) content;
         for (Integer i = 0; i < total; i++) {

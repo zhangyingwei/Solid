@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 public class LengthSolidMethod implements SolidMethod<Object> {
     @Override
-    public Integer doFormate(Object content, Object args) {
+    public Integer doFormate(Object content, Object[] args) {
         if (content instanceof String) {
             return ((String) content).length();
         } else if (content instanceof Collection) {

@@ -9,7 +9,7 @@ import java.util.*;
  */
 public class UniqSolidMethod implements SolidMethod<Object> {
     @Override
-    public Object doFormate(Object content, Object args) {
+    public Object doFormate(Object content, Object[] args) {
         if (content.getClass().isArray()) {
             Set<Object> result = new HashSet<Object>();
             result.addAll(Arrays.asList((Object[]) content));

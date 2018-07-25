@@ -10,7 +10,7 @@ import java.net.URLEncoder;
  */
 public class UrlDecodeSolidMethod implements SolidMethod<String> {
     @Override
-    public String doFormate(String content, Object args) {
+    public String doFormate(String content, Object[] args) {
         return URLDecoder.decode(content);
     }
 }

@@ -5,9 +5,9 @@ package com.github.zhangyingwei.solid.items.pipline;
  * @author zhangyw
  * @date 2018/7/3
  */
-public class AppendSolidMethod implements SolidMethod<String> {
+public class PrependSolidMethod implements SolidMethod<String> {
     @Override
     public String doFormate(String content, Object[] args) {
-        return content.concat(args[0].toString());
+        return args[0].toString().concat(content);
     }
 }

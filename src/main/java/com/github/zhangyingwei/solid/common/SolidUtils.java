@@ -66,6 +66,14 @@ public class SolidUtils {
      * @return
      */
     private static SolidResult getFromObject(Object object, String key) {
+        if (object.getClass().isArray()) {
+            Object[] objects = (Object[]) object;
+            if ("first".equals(key)) {
+                return new ObjectResult(objects[0]);
+            } else if ("last".equals(key)) {
+                return new ObjectResult(objects[objects.length - 1]);
+            }
+        }
         Class<? extends Object> clazz = object.getClass();
         String methodName = "get".concat(
                 key.substring(0,1).toUpperCase().concat(key.substring(1).toLowerCase())

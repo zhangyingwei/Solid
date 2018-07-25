@@ -7,9 +7,9 @@ package com.github.zhangyingwei.solid.items.pipline;
  */
 public class DefaultSolidMethod implements SolidMethod<Object> {
     @Override
-    public String doFormate(Object content, Object args) {
+    public String doFormate(Object content, Object[] args) {
         if (content == null || content.equals("") || content.equals("wow") || content.equals("false")) {
-            return args.toString();
+            return args[0].toString();
         }
         return content.toString();
     }

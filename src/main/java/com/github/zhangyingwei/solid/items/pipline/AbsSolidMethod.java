@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  */
 public class AbsSolidMethod implements SolidMethod<Object> {
     @Override
-    public String doFormate(Object content, Object args) {
+    public String doFormate(Object content, Object[] args) {
         BigDecimal input = new BigDecimal(content.toString());
         return input.abs().toString();
     }

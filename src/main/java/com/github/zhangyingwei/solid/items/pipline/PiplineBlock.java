@@ -8,6 +8,11 @@ import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
 import com.github.zhangyingwei.solid.result.WowResult;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author zhangyw
  * @date 2018/7/3
@@ -15,18 +20,47 @@ import com.github.zhangyingwei.solid.result.WowResult;
 public class PiplineBlock implements Block {
     private final SolidContext context;
     private String methodName;
-    private String arg;
+    private String[] args;
     protected Object input;
 
     public PiplineBlock(String methodName, SolidContext context) {
         this.methodName = this.getMethod(methodName).trim();
-        String args = methodName.replaceAll(this.methodName,"");
+        String argsTemplate = methodName.replaceAll(this.methodName,"").trim();
         if (this.methodName.endsWith(":")) {
-            this.arg = args.trim();
+            this.args = this.splitArgs(argsTemplate);
         } else {
-            this.arg = null;
+            this.args = new String[0];
         }
         this.context = context;
+    }
+
+    private String[] splitArgs(String argsTemplate) {
+        List<String> resultArgs = new ArrayList<String>();
+        if (argsTemplate.replaceAll(" ", "").equals("\",\"")) {
+            return new String[]{argsTemplate.trim()};
+        }
+        String[] argsArray = argsTemplate.split(",");
+        String item = null;
+        //TODO
+        for (String itemArg : argsArray) {
+            if (item != null
+                    && item.trim().startsWith("\"")
+                    && !item.trim().endsWith("\"")
+                    && item.trim().equals("\"")
+                    ) {
+                item = item.concat(",").concat(itemArg);
+            } else {
+                item = itemArg;
+            }
+            if (item != null) {
+                if ((item.trim().startsWith("\"") && item.trim().endsWith("\"")&& !item.trim().equals("\""))
+                        || (!item.trim().startsWith("\"") && !item.trim().endsWith("\""))) {
+                    resultArgs.add(item.trim());
+                    item = null;
+                }
+            }
+        }
+        return resultArgs.toArray(new String[resultArgs.size()]);
     }
 
     private String getMethod(String methodName) {
@@ -48,7 +82,7 @@ public class PiplineBlock implements Block {
         SolidMethod method = this.context.getMethod(this.getRealMethodName(methodName));
         Object result = null;
         if (null != method) {
-            result = method.doFormate(this.input, SolidUtils.getFromPlaceholderOrNot(context,this.arg).getResult());
+            result = method.doFormate(this.input, this.getArgsResults());
         } else {
             try {
                 throw new SolidMethodNotFoundException(methodName);
@@ -60,6 +94,10 @@ public class PiplineBlock implements Block {
             return new WowResult(this.input + "");
         }
         return new StringResult(result);
+    }
+
+    private Object[] getArgsResults() {
+        return Arrays.stream(this.args).map(key -> SolidUtils.getFromPlaceholderOrNot(context, key).getResult()).toArray();
     }
 
     private String getRealMethodName(String methodName) {

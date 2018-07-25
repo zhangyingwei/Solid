@@ -9,9 +9,9 @@ import java.math.BigDecimal;
  */
 public class TimesSolidMethod implements SolidMethod<Object> {
     @Override
-    public Object doFormate(Object content, Object args) {
+    public Object doFormate(Object content, Object[] args) {
         BigDecimal first = new BigDecimal(content.toString());
-        BigDecimal other = new BigDecimal(args.toString());
+        BigDecimal other = new BigDecimal(args[0].toString());
         return first.multiply(other);
     }
 }

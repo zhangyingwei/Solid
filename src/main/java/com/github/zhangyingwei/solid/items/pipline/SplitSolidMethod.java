@@ -7,7 +7,7 @@ package com.github.zhangyingwei.solid.items.pipline;
  */
 public class SplitSolidMethod implements SolidMethod<String> {
     @Override
-    public String[] doFormate(String content, Object args) {
-        return content.split(args.toString());
+    public String[] doFormate(String content, Object[] args) {
+        return content.split(args[0].toString());
     }
 }

@@ -13,15 +13,15 @@ import java.util.List;
  */
 public class ConcatSolidMethod implements SolidMethod<Object> {
     @Override
-    public Object doFormate(Object content, Object args) {
+    public Object doFormate(Object content, Object[] args) {
         if (content.getClass().isArray()) {
             List<Object> result = new ArrayList<Object>();
             result.addAll(Arrays.asList((Object[]) content));
-            result.addAll(this.asList(args));
+            result.addAll(this.asList(args[0]));
             return result;
         } else if (content instanceof Collection) {
             Collection input = (Collection) content;
-            Collection other = this.asList(args);
+            Collection other = this.asList(args[0]);
             input.addAll(other);
             return input;
         }

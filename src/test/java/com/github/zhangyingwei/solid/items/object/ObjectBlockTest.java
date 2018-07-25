@@ -70,4 +70,20 @@ public class ObjectBlockTest {
         System.out.println(result);
         Assert.assertEquals(result, "false");
     }
+
+    @Test
+    public void arrTest() throws Exception {
+        SolidContext context = new SolidContext();
+        String template = "{{ has.first }}";
+        String[] hass = new String[]{
+                "1",
+                "2",
+                "3"
+        };
+        context.bindArgs("has", hass);
+        ObjectBlock objectBlock = new ObjectBlock(context, template);
+        String result = objectBlock.render().getResult();
+        System.out.println(result);
+        Assert.assertEquals(result, "1");
+    }
 }

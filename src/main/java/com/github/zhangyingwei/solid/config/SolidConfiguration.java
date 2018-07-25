@@ -63,6 +63,7 @@ public class SolidConfiguration {
      */
     private void init() {
         this.context.bindMethod("append", new AppendSolidMethod());
+        this.context.bindMethod("prepend", new PrependSolidMethod());
         this.context.bindMethod("concat", new ConcatSolidMethod());
         this.context.bindMethod("length", new LengthSolidMethod());
         this.context.bindMethod("range", new RangeSolidMethod());
@@ -78,6 +79,12 @@ public class SolidConfiguration {
         this.context.bindMethod("url_decode", new UrlDecodeSolidMethod());
         this.context.bindMethod("uniq", new UniqSolidMethod());
         this.context.bindMethod("join", new JoinSolidMethod());
+        this.context.bindMethod("downcase", new DowncaseSolidMethod());
+        this.context.bindMethod("escape", new EscapeSolidMethod());
+        this.context.bindMethod("newline_to_br", new NewlineToBrSolidMethod());
+        this.context.bindMethod("replace", new ReplaceSolidMethod());
+        this.context.bindMethod("replace_first", new ReplaceFirstSolidMethod());
+        this.context.bindMethod("reverse", new ReverseSolidMethod());
     }
 
     public SolidContext getContext() {

@@ -7,7 +7,7 @@ package com.github.zhangyingwei.solid.items.pipline;
  */
 public class CapitalizeSolidMethod implements SolidMethod<String> {
     @Override
-    public String doFormate(String content, Object args) {
+    public String doFormate(String content, Object[] args) {
         return content.substring(0, 1).toUpperCase().concat(content.substring(1).toLowerCase());
     }
 }
