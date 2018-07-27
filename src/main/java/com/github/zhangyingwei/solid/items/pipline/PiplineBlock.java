@@ -2,6 +2,7 @@ package com.github.zhangyingwei.solid.items.pipline;
 
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.common.SolidUtils;
+import com.github.zhangyingwei.solid.common.StringHandler;
 import com.github.zhangyingwei.solid.exception.SolidMethodNotFoundException;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
@@ -36,29 +37,16 @@ public class PiplineBlock implements Block {
 
     private String[] splitArgs(String argsTemplate) {
         List<String> resultArgs = new ArrayList<String>();
-        if (argsTemplate.replaceAll(" ", "").equals("\",\"")) {
-            return new String[]{argsTemplate.trim()};
-        }
-        String[] argsArray = argsTemplate.split(",");
-        String item = null;
-        //TODO
-        for (String itemArg : argsArray) {
-            if (item != null
-                    && item.trim().startsWith("\"")
-                    && !item.trim().endsWith("\"")
-                    && item.trim().equals("\"")
-                    ) {
-                item = item.concat(",").concat(itemArg);
+        StringHandler handler = new StringHandler(argsTemplate);
+        while (!handler.isOver()) {
+            String result = "";
+            if (handler.startWith('"')) {
+                result = handler.getFromTo('"', '"');
+                handler.getUntil(',');
             } else {
-                item = itemArg;
+                result = handler.getUntil(',');
             }
-            if (item != null) {
-                if ((item.trim().startsWith("\"") && item.trim().endsWith("\"")&& !item.trim().equals("\""))
-                        || (!item.trim().startsWith("\"") && !item.trim().endsWith("\""))) {
-                    resultArgs.add(item.trim());
-                    item = null;
-                }
-            }
+            resultArgs.add(result.trim());
         }
         return resultArgs.toArray(new String[resultArgs.size()]);
     }
