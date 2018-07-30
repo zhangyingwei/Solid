@@ -59,6 +59,11 @@ public class ObjectBlock implements Block {
         return new StringResult(renderObject().getResult().toString());
     }
 
+    @Override
+    public String text() {
+        return this.template;
+    }
+
     public SolidResult renderObject() {
         if (!flag) {
             return new StringResult("");

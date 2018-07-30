@@ -60,4 +60,9 @@ public class StringHandler {
         }
         return false;
     }
+
+    public StringHandler resetIndex(int index) {
+        this.index = index;
+        return this;
+    }
 }

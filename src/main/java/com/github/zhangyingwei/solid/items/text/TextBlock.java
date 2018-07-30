@@ -31,6 +31,11 @@ public class TextBlock implements Block {
     }
 
     @Override
+    public String text() {
+        return text;
+    }
+
+    @Override
     public String toString() {
         return "Text(" + text + ")";
     }

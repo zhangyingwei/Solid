@@ -11,6 +11,7 @@ import com.github.zhangyingwei.solid.result.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -27,12 +28,27 @@ public class SolidUtils {
      * @return
      */
     private static SolidResult<Object> getObjectFromContext(String template, SolidContext context) {
-        String[] objectKeys = template.split("\\.");
+        StringHandler templateHandler = new StringHandler(template);
+        String fatherTemplate = templateHandler.getUntil('[');
+        String childTemplate = templateHandler.getUntil(']');
+        String[] objectKeys = fatherTemplate.split("\\.");
         Object tempValue = context.getParams();
         for (String objectKey : objectKeys) {
             tempValue = getValueFromObject(tempValue, objectKey);
             if (tempValue instanceof WowResult) {
                 return (SolidResult) tempValue;
+            }
+        }
+        SolidResult result = (SolidResult) tempValue;
+        if (childTemplate != null && childTemplate.length() > 0) {
+            if (result.getResult().getClass().isArray()) {
+                Object[] objects = (Object[]) result.getResult();
+                tempValue = new ObjectResult(objects[Integer.parseInt(childTemplate.trim())]);
+            } else if (tempValue instanceof Collection) {
+                Collection collection = (Collection) result.getResult();
+                tempValue = new ObjectResult(collection.toArray()[Integer.parseInt(childTemplate.trim())]);
+            } else {
+                tempValue = getValueFromObject(result.getResult(), getFromPlaceholderOrNot(context, childTemplate).getResult().toString());
             }
         }
         return (SolidResult<Object>) tempValue;
@@ -218,6 +234,9 @@ public class SolidUtils {
         return mark.substring(leftMark.length(), (mark.length() - rightMark.length()));
     }
 
+    /**
+     * @param value
+     */
     public static void checkTypeAndThrow(Object value) {
         if (value instanceof WowResult) {
             WowResult wow = (WowResult) value;
@@ -229,6 +248,10 @@ public class SolidUtils {
         }
     }
 
+    /**
+     * @param value
+     * @throws SolidException
+     */
     public static void checkType(Object value) throws SolidException {
         if (value instanceof WowResult) {
             WowResult wow = (WowResult) value;

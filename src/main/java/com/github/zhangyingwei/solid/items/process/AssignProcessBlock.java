@@ -43,4 +43,9 @@ public class AssignProcessBlock extends ProcessBlock {
         super.context.bindArgs(this.key, new ObjectBlock(context,SolidUtils.bulidObjectTemplateFromTemplateContent(this.value)).renderObject().getResult());
         return new StringResult("");
     }
+
+    @Override
+    public String text() {
+        return this.topMark;
+    }
 }

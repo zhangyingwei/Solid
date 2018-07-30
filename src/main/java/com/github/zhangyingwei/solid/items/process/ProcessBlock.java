@@ -70,6 +70,11 @@ public abstract class ProcessBlock implements Block {
         return "Process(" + topMark + ")";
     }
 
+    @Override
+    public String text() {
+        return topMark;
+    }
+
     public boolean isNoEndBlock(){
         return Constants.TAG_NO_END.equals(this.endTag);
     }

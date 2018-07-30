@@ -17,12 +17,13 @@ public class IncludeProcessBlockTest {
 
     @Test
     public void render() {
-        String templateString = "{% assign __path = 123 %} {{ __path }} {% include hello this is include haha age is {{ age }} %} {% assign username = uname %} {{ username }}";
+        String templateString = "{% assign __path = 123 %} {{ __path }} {% include {{ childpath }} %} {% assign username = uname %} {{ username }}";
         SolidConfiguration configuration = new SolidConfiguration(new StringTemplateResourceLoader());
         TemplateResolver builder = new TemplateResolver(configuration);
         Template template = builder.resolve(templateString);
         template.bind("uname", "bob");
         template.bind("age", 123456);
+        template.bind("childpath", "hello.txt");
         System.out.println(template.render());
     }
 }

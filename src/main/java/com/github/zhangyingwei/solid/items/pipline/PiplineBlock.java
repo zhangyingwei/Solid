@@ -84,6 +84,11 @@ public class PiplineBlock implements Block {
         return new StringResult(result);
     }
 
+    @Override
+    public String text() {
+        return methodName;
+    }
+
     private Object[] getArgsResults() {
         return Arrays.stream(this.args).map(key -> SolidUtils.getFromPlaceholderOrNot(context, key).getResult()).toArray();
     }

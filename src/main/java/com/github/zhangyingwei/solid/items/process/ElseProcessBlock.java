@@ -22,4 +22,9 @@ public class ElseProcessBlock extends ProcessBlock {
         });
         return new StringResult(resultString.toString());
     }
+
+    @Override
+    public String text() {
+        return topMark;
+    }
 }

@@ -2,11 +2,17 @@ package com.github.zhangyingwei.solid.items.object;
 
 
 import com.github.zhangyingwei.solid.SolidContext;
+import com.github.zhangyingwei.solid.config.SolidConfiguration;
+import com.github.zhangyingwei.solid.config.StringTemplateResourceLoader;
 import com.github.zhangyingwei.solid.demo.User;
 import com.github.zhangyingwei.solid.items.pipline.AppendSolidMethod;
 import com.github.zhangyingwei.solid.items.pipline.LengthSolidMethod;
+import com.github.zhangyingwei.solid.template.Template;
+import com.github.zhangyingwei.solid.template.TemplateResolver;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 /**
  * @author zhangyw
@@ -85,5 +91,38 @@ public class ObjectBlockTest {
         String result = objectBlock.render().getResult();
         System.out.println(result);
         Assert.assertEquals(result, "1");
+    }
+
+    @Test
+    public void arrFromIndexTest() throws Exception {
+        SolidContext context = new SolidContext();
+        String templateString = "{{ has[0] }}";
+        String[] hass = new String[]{
+                "1",
+                "2",
+                "3"
+        };
+        SolidConfiguration configuration = new SolidConfiguration(new StringTemplateResourceLoader());
+        TemplateResolver builder = new TemplateResolver(configuration);
+        Template template = builder.resolve(templateString);
+        template.bind("has", hass);
+        System.out.println(template.render());
+        Assert.assertEquals(template.render(), "1");
+    }
+
+    @Test
+    public void objectFromIndexTest() throws Exception {
+        SolidContext context = new SolidContext();
+        String templateString = "{{ user[namekey] | append: \" is \" | append: user.age }}";
+        User user = new User();
+        user.setName("wangerxiao");
+        user.setAge(102);
+        SolidConfiguration configuration = new SolidConfiguration(new StringTemplateResourceLoader());
+        TemplateResolver builder = new TemplateResolver(configuration);
+        Template template = builder.resolve(templateString);
+        template.bind("user", user);
+        template.bind("namekey", "name");
+        System.out.println(template.render());
+        Assert.assertEquals(template.render(), "wangerxiao is 102");
     }
 }
