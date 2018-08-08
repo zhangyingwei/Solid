@@ -23,7 +23,7 @@ public class IFProcessBlock extends ProcessBlock {
     private List<ElsIFProcessBlock> elseIfBlock = new ArrayList<ElsIFProcessBlock>();
 
     public IFProcessBlock(String topMark, SolidContext context) {
-        super(SolidUtils.formateAsNomal(topMark).toLowerCase(), context);
+        super(SolidUtils.formateAsNomal(topMark), context);
         super.tag = Constants.TAG_IF;
         super.endTag = Constants.TAG_IF_END;
         this.splitTemplateToIfItems();

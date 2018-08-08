@@ -31,20 +31,28 @@ public class Template implements SolidTemplate {
     private void init() {
         String content = this.configuration.getResourcesLoader().load(source);
         List<Block> blocks = this.templateParser.parse(content);
-//        System.out.println(blocks);
         this.resultBlocks = new ArrayList<Block>();
         Stack<Block> blockStack = new Stack<Block>();
         Collections.reverse(blocks);
         blockStack.addAll(blocks);
         while (!blockStack.empty()) {
             Block tempBlock = blockStack.pop();
+            Block resultBlock = null;
             if (tempBlock instanceof ProcessBlock) {
                 ProcessBlock processBlock = (ProcessBlock) tempBlock;
                 if (!processBlock.isNoEndBlock()) {
-                    this.bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
+                    resultBlock = this.bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
                 }
             }
             resultBlocks.add(tempBlock);
+            if (resultBlock != null) {
+                if (resultBlock instanceof EndProcessBlock) {
+                    EndProcessBlock endProcessBlock = (EndProcessBlock) resultBlock;
+                    if (endProcessBlock.isEndOf((ProcessBlock) tempBlock)) {
+                        resultBlocks.add(resultBlock);
+                    }
+                }
+            }
         }
     }
 
@@ -67,15 +75,16 @@ public class Template implements SolidTemplate {
      * @param rootBlock
      * @param blockStack
      */
-    private void bulidProcessBlock(ProcessBlock rootBlock, Stack<Block> blockStack) {
+    private Block bulidProcessBlock(ProcessBlock rootBlock, Stack<Block> blockStack) {
         while (!blockStack.empty()) {
             Block tempBlock = blockStack.pop();
+            Block resultBlock = null;
             if (tempBlock instanceof ProcessBlock) {
                 ProcessBlock processBlock = (ProcessBlock) tempBlock;
                 if (tempBlock instanceof EndProcessBlock) {
                     EndProcessBlock end = (EndProcessBlock) processBlock;
                     if (end.isEndOf(rootBlock)) {
-                        break;
+                        return end;
                     } else {
                         blockStack.push(end);
                         break;
@@ -85,10 +94,20 @@ public class Template implements SolidTemplate {
                     rootBlock.addChildBlock(tempBlock);
                     break;
                 }
-                bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
+                resultBlock = bulidProcessBlock((ProcessBlock) tempBlock, blockStack);
             }
             rootBlock.addChildBlock(tempBlock);
+
+            if (resultBlock != null) {
+                if (resultBlock instanceof EndProcessBlock) {
+                    EndProcessBlock endProcessBlock = (EndProcessBlock) resultBlock;
+                    if (endProcessBlock.isEndOf((ProcessBlock) tempBlock)) {
+                        rootBlock.addChildBlock(resultBlock);
+                    }
+                }
+            }
         }
+        return null;
     }
 
     public void setContentType(String contentType) {
