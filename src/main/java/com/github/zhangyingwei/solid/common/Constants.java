@@ -5,6 +5,7 @@ package com.github.zhangyingwei.solid.common;
  * @date 2018/7/3
  */
 public class Constants {
+    public static String INCLUDE_PATH = "_includes/";
     public static final String CHAR_SET_UTF_8 = "UTF-8";
     public static final String KEY_TEMPLATE_CACHE = "template_cache";
     public static final String CONTENT_TYPE = "text/html; charset=utf-8";
@@ -19,6 +20,8 @@ public class Constants {
     public static String PROCESS_RIGHTMARK = "%}";
 
 
+    public static final String TAG_RAW = "raw";
+    public static final String TAG_RAW_END = "endraw";
     public static final String TAG_NO_END = "No";
     public static final String TAG_ASSIGN = "assign";
     public static final String TAG_INCLUDE = "include";

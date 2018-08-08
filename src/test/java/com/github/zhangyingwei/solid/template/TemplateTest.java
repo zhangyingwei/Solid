@@ -17,6 +17,26 @@ import java.util.List;
 public class TemplateTest {
 
     @Test
+    public void templateFormateTest() {
+        SolidConfiguration configuration = new SolidConfiguration(new FileTemplateResourceLoader("src/main/resources"));
+        TemplateResolver resolver = new TemplateResolver(configuration);
+        resolver.setSuffix(".txt");
+        Template template = resolver.resolve("template");
+        template.bind("username", "JoinWe");
+        template.bind("password","123456");
+        List<User> users = new ArrayList<User>();
+        for (int i = 0; i < 10; i++) {
+            User user = new User();
+            user.setName("name" + i);
+            user.setAge(i);
+            users.add(user);
+        }
+        template.bind("users",users);
+        String result = template.render();
+        System.out.println(result);
+    }
+
+    @Test
     public void renderTest() {
         User user = new User();
         user.setName("xiaoming");

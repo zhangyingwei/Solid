@@ -2,6 +2,7 @@ package com.github.zhangyingwei.solid.items.process;
 
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.common.Constants;
+import com.github.zhangyingwei.solid.common.SolidUtils;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
 
@@ -72,7 +73,9 @@ public abstract class ProcessBlock implements Block {
 
     @Override
     public String text() {
-        return topMark;
+        List<String> childsText = childBlocks.stream().map(child -> child.text()).collect(Collectors.toList());
+        return (SolidUtils.formateAsNomal(topMark).equals(
+                Constants.PROCESS_LEFTMARK.concat(" ").concat(Constants.TAG_RAW).concat(" ").concat(Constants.PROCESS_RIGHTMARK)) ? "" : topMark).concat(String.join("", childsText));
     }
 
     public boolean isNoEndBlock(){

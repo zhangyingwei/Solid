@@ -14,7 +14,7 @@ import com.github.zhangyingwei.solid.template.Template;
  * @date 2018/7/3
  */
 public class IncludeProcessBlock extends ProcessBlock {
-    private String url ="_includes/";
+    private String url =Constants.INCLUDE_PATH;
     private Template includeTemplate;
 
     public IncludeProcessBlock(String topMark, SolidContext context) {

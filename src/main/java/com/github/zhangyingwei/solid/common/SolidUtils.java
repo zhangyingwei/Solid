@@ -128,6 +128,10 @@ public class SolidUtils {
             return new AssignProcessBlock(template, context);
         } else if (command.startsWith(Constants.TAG_INCLUDE)) {
             return new IncludeProcessBlock(template, context);
+        } else if (command.startsWith(Constants.TAG_RAW)) {
+            return new RawProcessBlock(template, context);
+        } else if (command.startsWith(Constants.TAG_RAW_END)) {
+            return new EndProcessBlock(template, context).setTag(Constants.TAG_RAW_END);
         }
         return new TextBlock("not find process block , return a text block");
     }
