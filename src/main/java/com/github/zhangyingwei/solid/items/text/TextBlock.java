@@ -11,6 +11,7 @@ import com.github.zhangyingwei.solid.result.StringResult;
 public class TextBlock implements Block {
     private String text;
     private boolean flag = true;
+    private boolean skip = false;
 
     public TextBlock(String text) {
         this.text = text;
@@ -27,16 +28,31 @@ public class TextBlock implements Block {
         if (!flag) {
             return new StringResult("");
         }
-        return new StringResult(text);
+        return new StringResult(getText());
     }
 
     @Override
     public String text() {
+        return getText();
+    }
+
+    public boolean textIs(String other) {
+        return text.replaceAll(" ","").equals(other);
+    }
+
+    public String getText() {
+        if (skip) {
+            return "";
+        }
         return text;
     }
 
     @Override
     public String toString() {
         return "Text(" + text + ")";
+    }
+
+    public void skip() {
+        this.skip = true;
     }
 }

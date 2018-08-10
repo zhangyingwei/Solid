@@ -7,6 +7,7 @@ import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +24,26 @@ public abstract class ProcessBlock implements Block {
     protected List<Block> childBlocks = new ArrayList<Block>();
     protected SolidContext context;
     protected boolean flag = true;
+    private boolean deleteBlank = false;
 
     public ProcessBlock(String topMark,SolidContext context) {
         this.topMark = topMark;
         this.context = context;
+        this.checkWhiteTag();
+    }
+
+    /**
+     * 检查是否 {%- process -%}
+     * 如果是，打标签并去掉 -
+     */
+    private void checkWhiteTag() {
+        if (this.topMark.startsWith(this.leftMark.concat("-")) && this.topMark.endsWith("-".concat(this.rightMark))) {
+            this.deleteBlank = true;
+            String[] marks = this.topMark.split(" ");
+            marks[0] = this.leftMark;
+            marks[marks.length - 1] = this.rightMark;
+            this.topMark = String.join(" ", marks);
+        }
     }
 
     protected List<SolidResult> childsResult(boolean iftrue) {
@@ -41,6 +58,10 @@ public abstract class ProcessBlock implements Block {
 
     public void addChildBlock(Block block) {
         this.childBlocks.add(block);
+    }
+
+    public boolean isDeleteBlank() {
+        return deleteBlank;
     }
 
     public String getEndTag() {

@@ -4,6 +4,7 @@ import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.config.SolidConfiguration;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.items.process.*;
+import com.github.zhangyingwei.solid.items.text.TextBlock;
 
 import java.util.*;
 
@@ -31,6 +32,28 @@ public class Template implements SolidTemplate {
     private void init() {
         String content = this.configuration.getResourcesLoader().load(source);
         List<Block> blocks = this.templateParser.parse(content);
+        for (int i = 0; i < blocks.size() - 2; i++) {
+            Block before = blocks.get(i);
+            Block current = blocks.get(i + 1);
+            Block after = blocks.get(i + 2);
+            if (current instanceof ProcessBlock) {
+                ProcessBlock currentProcess = (ProcessBlock) current;
+                if (currentProcess.isDeleteBlank()) {
+                    if (before instanceof TextBlock) {
+                        TextBlock beforeTextBlock = (TextBlock) before;
+                        if (beforeTextBlock.textIs("\n")) {
+                            beforeTextBlock.skip();
+                        }
+                    }
+                    if (after instanceof TextBlock) {
+                        TextBlock afterTextBlock = (TextBlock) after;
+                        if (afterTextBlock.textIs("\n")) {
+                            afterTextBlock.skip();
+                        }
+                    }
+                }
+            }
+        }
         this.resultBlocks = new ArrayList<Block>();
         Stack<Block> blockStack = new Stack<Block>();
         Collections.reverse(blocks);

@@ -64,7 +64,7 @@ public class TemplateTest {
         template.bind("username", "admin");
         template.bind("password","密码");
         template.render();
-//        System.out.println(template.render());
+        System.out.println(template.render());
     }
 
     @Test

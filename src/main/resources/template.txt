@@ -1,9 +1,10 @@
 {{username}}:{{password}}
-{% if username == "JoinWe" %}
-    {% for user in users %}
+
+{%- if username == "JoinWe" -%}
+    {%- for user in users -%}
         {{user.name}}
-    {% endfor %}
-{% endif %}
+    {%- endfor -%}
+{%- endif -%}
 {% raw %}
 {{username}}:{{password}}
 {% if username == "JoinWe" %}

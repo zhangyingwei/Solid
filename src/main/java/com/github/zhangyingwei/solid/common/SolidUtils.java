@@ -11,9 +11,9 @@ import com.github.zhangyingwei.solid.result.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author zhangyw
@@ -108,10 +108,11 @@ public class SolidUtils {
     }
 
     public static Block routeProcessBlock(String template, SolidContext context) {
-        String command = template.trim().substring(
-                Constants.PROCESS_LEFTMARK.length(),
-                template.trim().length() - Constants.PROCESS_RIGHTMARK.length()
-        ).trim();
+        List<String> commandItemList = Arrays.stream(template.trim().split(" ")).collect(Collectors.toList());
+        commandItemList.remove(0);
+        commandItemList.remove(commandItemList.size() - 1);
+        String command = String.join(" ", commandItemList);
+
         if (command.startsWith(Constants.TAG_FOR)) {
             return new ForProcessBlock(template, context);
         } else if (command.startsWith(Constants.TAG_FOR_END)) {
