@@ -15,17 +15,12 @@ public class StringHandler {
 
     public String getFromTo(char from,char to) {
         getUntil(from);
-        for (int i = index; i < template.length(); i++) {
-            if (template.charAt(i) == to) {
-                i += 1;
-                String result = template.substring(index - 1, i);
-                index = i;
-                return result;
-            }
-        }
-        String result = template.substring(index);
-        index = template.length();
-        return result;
+        return getUntil(to);
+    }
+
+    public String getFromTo(String from,String to) {
+        getUntil(from);
+        return getUntil(to);
     }
 
     public String getUntil(char until) {
@@ -41,15 +36,32 @@ public class StringHandler {
         return result;
     }
 
+    public String getUntil(String until) {
+        for (int i = index; i < template.length(); i++) {
+            String subTemplate = template.substring(i);
+            int index = subTemplate.indexOf(until);
+            this.index += index;
+            this.index += until.length();
+            return subTemplate.substring(0, index);
+        }
+        String result = template.substring(index);
+        index = template.length();
+        return result;
+    }
+
     public Boolean isOver() {
         return index == template.length();
     }
 
     public static void main(String[] args) {
-        String template = "\"hello world\",123";
+        String template = "\"hello world\",12    3      aabbccddeeffgghhiijjkkll";
         StringHandler handler = new StringHandler(template.substring(1));
         System.out.println(handler.getUntil('"'));
         System.out.println(handler.getUntilFrom(1,'3'));
+        System.out.println(handler.string());
+//        System.out.println(handler.trimLeft().string());
+        System.out.println(handler.getUntil("cc"));
+        System.out.println(handler.getUntil("ii"));
     }
 
     public boolean startWith(char c) {
@@ -61,8 +73,27 @@ public class StringHandler {
         return false;
     }
 
+    public boolean startWith(String str) {
+        for (int i = index; i < template.length(); i++) {
+            String subTemplate = template.substring(i);
+            return subTemplate.startsWith(str);
+        }
+        return false;
+    }
+
     public StringHandler resetIndex(int index) {
         this.index = index;
         return this;
+    }
+
+    public StringHandler trimLeft() {
+        while (template.charAt(this.index) == ' ') {
+            this.index++;
+        }
+        return this;
+    }
+
+    public String string() {
+        return this.template.substring(this.index);
     }
 }

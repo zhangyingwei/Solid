@@ -37,7 +37,8 @@
         {% endfor %}
         </tbody>
     </table>
-    {% include test %}
+    {% assign code="20001" %}
+    {% include test text="this is include text hahahaha" text2 = "haha this is include text too" text3 = {{ code }} %}
 </div>
 </body>
 </html>

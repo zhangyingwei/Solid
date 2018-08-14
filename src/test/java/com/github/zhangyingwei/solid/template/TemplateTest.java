@@ -84,6 +84,6 @@ public class TemplateTest {
         }
         template.bind("users",users);
         template.render();
-//        System.out.println(template.render());
+        System.out.println(template.render());
     }
 }

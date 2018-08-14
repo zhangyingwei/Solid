@@ -160,7 +160,7 @@ public class SolidUtils {
     private static Boolean isPlaceholder(String text) {
         char first = text.charAt(0);
         char last = text.charAt(text.length() - 1);
-        return first != '"' && last != '"';
+        return (first != '"' && last != '"') && (first != '\'' && last != '\'');
     }
 
     /**
