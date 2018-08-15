@@ -2,7 +2,7 @@ package com.github.zhangyingwei.solid.items.pipline;
 
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.common.SolidUtils;
-import com.github.zhangyingwei.solid.common.StringHandler;
+import com.github.zhangyingwei.solid.common.StringConveyor;
 import com.github.zhangyingwei.solid.exception.SolidMethodNotFoundException;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.result.SolidResult;
@@ -37,14 +37,14 @@ public class PiplineBlock implements Block {
 
     private String[] splitArgs(String argsTemplate) {
         List<String> resultArgs = new ArrayList<String>();
-        StringHandler handler = new StringHandler(argsTemplate);
-        while (!handler.isOver()) {
+        StringConveyor conveyor = new StringConveyor(argsTemplate).trimLeft();
+        while (conveyor.length() > 0) {
             String result = "";
-            if (handler.startWith('"')) {
-                result = handler.getFromTo('"', '"');
-                handler.getUntil(',');
+            if (conveyor.startWith("\"")) {
+                result = conveyor.getFromTo("\"", "\"").result();
+                conveyor.getUntil(",", true);
             } else {
-                result = handler.getUntil(',');
+                result = conveyor.getUntil(",",true).result();
             }
             resultArgs.add(result.trim());
         }

@@ -28,9 +28,9 @@ public class SolidUtils {
      * @return
      */
     private static SolidResult<Object> getObjectFromContext(String template, SolidContext context) {
-        StringHandler templateHandler = new StringHandler(template);
-        String fatherTemplate = templateHandler.getUntil('[');
-        String childTemplate = templateHandler.getUntil(']');
+        StringConveyor conveyor = new StringConveyor(template);
+        String fatherTemplate = conveyor.getUntil("[",false).result().trim();
+        String childTemplate = conveyor.getBetween("[","]").result().trim();
         String[] objectKeys = fatherTemplate.split("\\.");
         Object tempValue = context.getParams();
         for (String objectKey : objectKeys) {

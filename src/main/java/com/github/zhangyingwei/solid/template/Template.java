@@ -23,7 +23,6 @@ public class Template implements SolidTemplate {
         this.configuration = configuration;
         this.templateParser = new TemplateParser(this.configuration.getContext());
         this.source = source;
-        this.init();
     }
 
     /**
@@ -86,6 +85,7 @@ public class Template implements SolidTemplate {
 
     @Override
     public String render() {
+        this.init();
         StringBuilder resultText = new StringBuilder();
         resultBlocks.stream().map(block -> block.render().getResult()).forEach(res -> {
             resultText.append(res);
