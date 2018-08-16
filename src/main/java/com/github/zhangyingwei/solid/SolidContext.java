@@ -15,6 +15,13 @@ public class SolidContext {
     private Map<String, SolidMethod> methodMap = new HashMap<String,SolidMethod>();
     private SolidTemplateResourcesLoader resourcesLoader;
 
+    public SolidContext() {
+    }
+
+    public SolidContext(SolidTemplateResourcesLoader resourcesLoader) {
+        this.resourcesLoader = resourcesLoader;
+    }
+
     public void bindArgs(String key, Object value) {
         params.put(key, value);
     }
@@ -41,5 +48,17 @@ public class SolidContext {
 
     public SolidTemplateResourcesLoader getResourcesLoader() {
         return resourcesLoader;
+    }
+
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
+    }
+
+    public void setMethodMap(Map<String, SolidMethod> methodMap) {
+        this.methodMap = methodMap;
+    }
+
+    public Map<String, SolidMethod> getMethodMap() {
+        return methodMap;
     }
 }

@@ -15,4 +15,19 @@ public class StringTemplateResourceLoader implements SolidTemplateResourcesLoade
 
     @Override
     public void setSuffix(String suffix) {}
+
+    @Override
+    public String getPrefix() {
+        return null;
+    }
+
+    @Override
+    public String getSuffix() {
+        return null;
+    }
+
+    @Override
+    public String getBasePath() {
+        return null;
+    }
 }

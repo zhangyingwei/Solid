@@ -3,6 +3,7 @@ package com.github.zhangyingwei.solid.items.process;
 import com.github.zhangyingwei.solid.SolidContext;
 import com.github.zhangyingwei.solid.common.Constants;
 import com.github.zhangyingwei.solid.common.SolidUtils;
+import com.github.zhangyingwei.solid.exception.SolidParamNotFoundException;
 import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
 
@@ -49,12 +50,18 @@ public class ForProcessBlock extends ProcessBlock {
                 childs.addAll(super.childsResult(true));
                 context.unbindArgs(this.itemName);
             }
-        } else {
+        } else if (this.sources.getClass().isArray()) {
             Object[] objects = (Object[]) this.sources;
             for (Object object : objects) {
                 context.bindArgs(this.itemName, object);
                 childs.addAll(super.childsResult(true));
                 context.unbindArgs(this.itemName);
+            }
+        } else {
+            try {
+                throw new SolidParamNotFoundException(sourcesName+" is not collection or arrray");
+            } catch (SolidParamNotFoundException e) {
+                e.printStackTrace();
             }
         }
         StringBuilder sBuilder = new StringBuilder();

@@ -12,18 +12,19 @@ public class FileTemplateResourceLoader implements SolidTemplateResourcesLoader 
     /**
      * 前缀
      */
-    private String prefix = Constants.TEMPLATE_PREFIX;
+    private String prefix;
 
     /**
      * 后缀
      */
-    private String suffix = Constants.TEMPLATE_SUFFIX;
+    private String suffix;
 
     public FileTemplateResourceLoader() {
-        this.basePath = "./";
+        this.init();
     }
 
     public FileTemplateResourceLoader(String basePath) {
+        this.init();
         this.basePath = basePath;
     }
 
@@ -64,5 +65,25 @@ public class FileTemplateResourceLoader implements SolidTemplateResourcesLoader 
     @Override
     public void setSuffix(String suffix) {
         this.suffix = suffix;
+    }
+
+    @Override
+    public String getPrefix() {
+        return this.prefix;
+    }
+
+    @Override
+    public String getSuffix() {
+        return this.suffix;
+    }
+
+    @Override
+    public String getBasePath() {
+        return this.basePath;
+    }
+
+    private void init() {
+        this.prefix = Constants.TEMPLATE_PREFIX;
+        this.suffix = Constants.TEMPLATE_SUFFIX;
     }
 }

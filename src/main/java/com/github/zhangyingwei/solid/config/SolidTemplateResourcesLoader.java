@@ -10,4 +10,10 @@ public interface SolidTemplateResourcesLoader {
     void setPrefix(String prefix);
 
     void setSuffix(String suffix);
+
+    String getPrefix();
+
+    String getSuffix();
+
+    String getBasePath();
 }

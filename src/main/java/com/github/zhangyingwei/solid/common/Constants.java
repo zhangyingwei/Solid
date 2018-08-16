@@ -13,8 +13,8 @@ public class Constants {
     public static final String CHAR_SET_UTF_8 = "UTF-8";
     public static final String KEY_TEMPLATE_CACHE = "template_cache";
     public static final String CONTENT_TYPE = "text/html; charset=utf-8";
-    public static String TEMPLATE_SUFFIX = null;
-    public static String TEMPLATE_PREFIX = null;
+    public static String TEMPLATE_SUFFIX = "";
+    public static String TEMPLATE_PREFIX = "";
     public static Boolean TEMPLATE_CACHE = true; // 是否缓存模板
     public static long KEY_TEMPLATE_TIMEOUT_MILLISECOND = 10000; // 10s
     public static String OBJ_LEFTMARK = "{{";

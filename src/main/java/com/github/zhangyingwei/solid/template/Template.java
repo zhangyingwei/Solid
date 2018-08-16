@@ -1,6 +1,7 @@
 package com.github.zhangyingwei.solid.template;
 
 import com.github.zhangyingwei.solid.common.Constants;
+import com.github.zhangyingwei.solid.common.SolidUtils;
 import com.github.zhangyingwei.solid.common.StringConveyor;
 import com.github.zhangyingwei.solid.config.SolidConfiguration;
 import com.github.zhangyingwei.solid.items.Block;
@@ -162,10 +163,11 @@ public class Template implements SolidTemplate {
     class Header {
         Map<String, String> params = new HashMap<String,String>();
         private String template;
-        private String layoutBasePath = Constants.LAYOUT_BASE_PATH;
+        private TemplateResolver layoutResolver;
 
         Header(String template) {
             this.template = template;
+            this.layoutResolver = SolidUtils.layoutResolver(configuration.getContext());
             this.analysis();
         }
 
@@ -187,12 +189,14 @@ public class Template implements SolidTemplate {
         }
 
         SolidTemplate template() {
-            Map page = new HashMap(params);
+            Map<String,String> page = new HashMap<String, String>(params);
             page.remove("layout");
-            bind("page",page);
+//            bind("page",page);
+            page.entrySet().stream().forEach(e -> {
+                bind(e.getKey(), e.getValue());
+            });
             String layoutTemplateName = this.params.get("layout").trim();
-            String templatePath = this.layoutBasePath.concat(layoutTemplateName).trim();
-            SolidTemplate layoutTemplate = new Template(configuration, templatePath);
+            SolidTemplate layoutTemplate = layoutResolver.resolve(layoutTemplateName.trim());
             return layoutTemplate;
         }
 

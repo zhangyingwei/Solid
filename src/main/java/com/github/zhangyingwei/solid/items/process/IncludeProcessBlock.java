@@ -9,6 +9,7 @@ import com.github.zhangyingwei.solid.items.object.ObjectBlock;
 import com.github.zhangyingwei.solid.result.SolidResult;
 import com.github.zhangyingwei.solid.result.StringResult;
 import com.github.zhangyingwei.solid.template.Template;
+import com.github.zhangyingwei.solid.template.TemplateResolver;
 
 import java.util.Arrays;
 
@@ -17,23 +18,25 @@ import java.util.Arrays;
  * @date 2018/7/3
  */
 public class IncludeProcessBlock extends ProcessBlock {
-    private String url =Constants.INCLUDE_PATH;
+    private String url;
     private Template includeTemplate;
     private String templateContent;
+    private TemplateResolver resolver;
 
     public IncludeProcessBlock(String topMark, SolidContext context) {
         super(topMark, context);
         super.tag = Constants.TAG_INCLUDE;
         super.endTag = Constants.TAG_NO_END;
+        this.resolver = SolidUtils.includeResolver(super.context);
     }
 
     private void init() {
         String template = SolidUtils.subMarkToTemplate(SolidUtils.formateAsNomal(super.topMark), super.leftMark, super.rightMark);
         StringConveyor conveyor = new StringConveyor(template);
         conveyor.getUntil(super.tag,true);
-        this.url = this.url + this.getIncludeTemplateUrl(conveyor);
+        this.url = this.getIncludeTemplateUrl(conveyor);
         this.templateContent = conveyor.trimLeft().string();
-        this.includeTemplate = new Template(new SolidConfiguration(super.context), this.url);
+        this.includeTemplate = this.resolver.resolve(this.url);
     }
 
     private String getIncludeTemplateUrl(StringConveyor conveyor) {

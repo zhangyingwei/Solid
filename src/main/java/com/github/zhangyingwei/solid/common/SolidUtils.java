@@ -1,12 +1,16 @@
 package com.github.zhangyingwei.solid.common;
 
 import com.github.zhangyingwei.solid.SolidContext;
+import com.github.zhangyingwei.solid.config.FileTemplateResourceLoader;
+import com.github.zhangyingwei.solid.config.SolidConfiguration;
+import com.github.zhangyingwei.solid.config.SolidTemplateResourcesLoader;
 import com.github.zhangyingwei.solid.exception.SolidException;
 import com.github.zhangyingwei.solid.exception.SolidParamNotFoundException;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.items.process.*;
 import com.github.zhangyingwei.solid.items.text.TextBlock;
 import com.github.zhangyingwei.solid.result.*;
+import com.github.zhangyingwei.solid.template.TemplateResolver;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -270,5 +274,32 @@ public class SolidUtils {
 
     public static String bulidObjectTemplateFromTemplateContent(String value) {
         return Constants.OBJ_LEFTMARK + value + Constants.OBJ_RIGHTMARK;
+    }
+
+    public static TemplateResolver includeResolver(SolidContext fromContext) {
+        SolidTemplateResourcesLoader resourcesLoader = new FileTemplateResourceLoader(
+                fromContext.getResourcesLoader().getBasePath()
+        );
+        SolidContext context = new SolidContext(resourcesLoader);
+        context.setParams(fromContext.getParams());
+        context.setMethodMap(fromContext.getMethodMap());
+        SolidConfiguration configuration = new SolidConfiguration(context);
+        TemplateResolver resolver = new TemplateResolver(configuration);
+        resolver.setPrefix(Constants.INCLUDE_PATH);
+        return resolver;
+    }
+
+    public static TemplateResolver layoutResolver(SolidContext fromContext) {
+        SolidTemplateResourcesLoader resourcesLoader = new FileTemplateResourceLoader(
+                fromContext.getResourcesLoader().getBasePath()
+        );
+        SolidContext context = new SolidContext(resourcesLoader);
+        context.setMethodMap(fromContext.getMethodMap());
+        context.setParams(fromContext.getParams());
+        SolidConfiguration configuration = new SolidConfiguration(context);
+        TemplateResolver resolver = new TemplateResolver(configuration);
+        resolver.setPrefix(Constants.LAYOUT_BASE_PATH);
+        resolver.setSuffix(fromContext.getResourcesLoader().getSuffix());
+        return resolver;
     }
 }
