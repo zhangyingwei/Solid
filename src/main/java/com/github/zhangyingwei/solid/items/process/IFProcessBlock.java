@@ -158,7 +158,7 @@ public class IFProcessBlock extends ProcessBlock {
                 this.second = SolidUtils.getFromPlaceholderOrNot(context, params[1]);
                 this.symbol = spliter;
             } else {
-                this.first = SolidUtils.getFromPlaceholderOrNot(context, super.template);
+                this.first = SolidUtils.getFromPlaceholderOrNot(context, templateText);
                 this.second = null;
             }
         }

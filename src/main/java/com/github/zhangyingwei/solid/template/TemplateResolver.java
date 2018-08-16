@@ -30,6 +30,7 @@ public class TemplateResolver {
         Template template = null;
         if (Constants.TEMPLATE_CACHE) {
             template = (Template) templateCache.get(source);
+            template = null;//先把缓存的功能去掉
         }
         if (template == null) {
             template = new Template(this.configuration,source);

@@ -35,7 +35,7 @@ public class Template implements SolidTemplate {
     private void init() {
         String content = this.configuration.getResourcesLoader().load(source);
         StringConveyor conveyor = new StringConveyor(content);
-        String headerContent = conveyor.getFromTo("---".concat(Constants.WRAP), "---".concat(Constants.WRAP)).result();
+        String headerContent = conveyor.getFromTo("---".concat(Constants.Wrap()), "---".concat(Constants.Wrap())).result();
         content = conveyor.string();
         this.header = new Header(headerContent);
         List<Block> blocks = this.templateParser.parse(content);
@@ -173,13 +173,13 @@ public class Template implements SolidTemplate {
 
         private void analysis() {
             StringConveyor conveyor = new StringConveyor(template);
-            String content = conveyor.getBetween("---".concat(Constants.WRAP), "---".concat(Constants.WRAP)).result();
+            String content = conveyor.getBetween("---".concat(Constants.Wrap()), "---".concat(Constants.Wrap())).result();
             conveyor = new StringConveyor(content);
             while (conveyor.length() > 0) {
                 String key = conveyor.getUntil(":", false).result();
                 conveyor.getUntil(":", true);
-                String value = conveyor.getUntil(Constants.WRAP,false).result();
-                conveyor.getUntil(Constants.WRAP, true);
+                String value = conveyor.getUntil(Constants.Wrap(),false).result();
+                conveyor.getUntil(Constants.Wrap(), true);
                 params.put(key, value);
             }
         }

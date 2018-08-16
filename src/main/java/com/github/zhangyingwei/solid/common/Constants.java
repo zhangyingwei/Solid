@@ -1,12 +1,13 @@
 package com.github.zhangyingwei.solid.common;
 
+import java.util.Properties;
+
 /**
  * @author zhangyw
  * @date 2018/7/3
  */
 public class Constants {
-    //换行符
-    public static final String WRAP = "\r\n";
+
     public static final String LAYOUT_CONTENT_KEY = "content";
     public static final String LAYOUT_BASE_PATH = "_layouts/";
     public static String INCLUDE_PATH = "_includes/";
@@ -36,4 +37,14 @@ public class Constants {
     public static final String TAG_ELSE_IF = "elsif";
     public static final String TAG_ELSIF_END = "end of ensif hahahah$#%#$%";
     public static final String TAG_ELSE = "else";
+
+    //换行符
+    public static String Wrap() {
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("windows")) {
+            return "\r\n";
+        } else {
+            return "\n";
+        }
+    }
 }
