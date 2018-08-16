@@ -14,6 +14,10 @@ public class StringConveyor {
 
     public StringConveyor getFromTo(String from,String to) {
         getUntil(from, true);
+        if (this.globalToIndex == this.templateLength()) {
+            this.globalToIndex = this.globalFromIndex;
+            return this;
+        }
         getUntil(to, true);
         this.globalFromIndex -= from.length();
         return this;
@@ -22,6 +26,10 @@ public class StringConveyor {
     public StringConveyor getBetween(String from, String to) {
         getUntil(from, true);
         getUntil(to, false);
+        if (this.globalToIndex == this.templateLength()) {
+            this.globalToIndex = this.globalFromIndex;
+            return this;
+        }
         return this;
     }
 

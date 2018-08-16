@@ -1,12 +1,14 @@
 package com.github.zhangyingwei.solid.template;
 
 import com.github.zhangyingwei.solid.common.Constants;
+import com.github.zhangyingwei.solid.common.StringConveyor;
 import com.github.zhangyingwei.solid.config.SolidConfiguration;
 import com.github.zhangyingwei.solid.items.Block;
 import com.github.zhangyingwei.solid.items.process.*;
 import com.github.zhangyingwei.solid.items.text.TextBlock;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zhangyw
@@ -18,6 +20,7 @@ public class Template implements SolidTemplate {
     private String source;
     private String contentType = Constants.CONTENT_TYPE;
     private List<Block> resultBlocks;
+    private Header header;
 
     public Template(SolidConfiguration configuration, String source) {
         this.configuration = configuration;
@@ -30,6 +33,10 @@ public class Template implements SolidTemplate {
      */
     private void init() {
         String content = this.configuration.getResourcesLoader().load(source);
+        StringConveyor conveyor = new StringConveyor(content);
+        String headerContent = conveyor.getFromTo("---".concat(Constants.WRAP), "---".concat(Constants.WRAP)).result();
+        content = conveyor.string();
+        this.header = new Header(headerContent);
         List<Block> blocks = this.templateParser.parse(content);
         for (int i = 0; i < blocks.size() - 2; i++) {
             Block before = blocks.get(i);
@@ -90,6 +97,10 @@ public class Template implements SolidTemplate {
         resultBlocks.stream().map(block -> block.render().getResult()).forEach(res -> {
             resultText.append(res);
         });
+        if (this.header.available()) {
+            this.bind(Constants.LAYOUT_CONTENT_KEY, resultText.toString());
+            return this.header.template().render();
+        }
         return resultText.toString();
     }
 
@@ -139,5 +150,51 @@ public class Template implements SolidTemplate {
 
     public String getContentType() {
         return contentType;
+    }
+
+    /**
+     * 模板文件的头信息
+     * ---
+     * layout: home
+     * title: Home
+     * ---
+     */
+    class Header {
+        Map<String, String> params = new HashMap<String,String>();
+        private String template;
+        private String layoutBasePath = Constants.LAYOUT_BASE_PATH;
+
+        Header(String template) {
+            this.template = template;
+            this.analysis();
+        }
+
+        private void analysis() {
+            StringConveyor conveyor = new StringConveyor(template);
+            String content = conveyor.getBetween("---".concat(Constants.WRAP), "---".concat(Constants.WRAP)).result();
+            conveyor = new StringConveyor(content);
+            while (conveyor.length() > 0) {
+                String key = conveyor.getUntil(":", false).result();
+                conveyor.getUntil(":", true);
+                String value = conveyor.getUntil(Constants.WRAP,false).result();
+                conveyor.getUntil(Constants.WRAP, true);
+                params.put(key, value);
+            }
+        }
+
+        boolean available() {
+            return !params.isEmpty() && params.containsKey("layout") && !"null".equals(params.get("layout"));
+        }
+
+        SolidTemplate template() {
+            Map page = new HashMap(params);
+            page.remove("layout");
+            bind("page",page);
+            String layoutTemplateName = this.params.get("layout").trim();
+            String templatePath = this.layoutBasePath.concat(layoutTemplateName).trim();
+            SolidTemplate layoutTemplate = new Template(configuration, templatePath);
+            return layoutTemplate;
+        }
+
     }
 }

@@ -46,4 +46,9 @@ public class StringConveyorTest {
         String res2 = this.conveyor.getBetween("{{", "}}").result();
         System.out.println(res2);
     }
+
+    @Test
+    public void print() {
+        System.out.println("你好，我叫张英伟");
+    }
 }

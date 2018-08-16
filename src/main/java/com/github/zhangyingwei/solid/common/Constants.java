@@ -5,6 +5,10 @@ package com.github.zhangyingwei.solid.common;
  * @date 2018/7/3
  */
 public class Constants {
+    //换行符
+    public static final String WRAP = "\r\n";
+    public static final String LAYOUT_CONTENT_KEY = "content";
+    public static final String LAYOUT_BASE_PATH = "_layouts/";
     public static String INCLUDE_PATH = "_includes/";
     public static final String CHAR_SET_UTF_8 = "UTF-8";
     public static final String KEY_TEMPLATE_CACHE = "template_cache";
