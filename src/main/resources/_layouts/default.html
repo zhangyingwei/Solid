@@ -1,0 +1,13 @@
+title: {{page.title}} - page: {{ page.page }}
+
+{% if page.page == "true" %}
+这个网页带有分页功能
+{% endif %}
+
+{% if page.title == "Title" %}
+网页的标题是 Title
+{% else %}
+    网页的标题不是 Title 是 {{page.title}}
+{% endif %}
+
+{{content}}
