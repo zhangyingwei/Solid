@@ -86,6 +86,7 @@ public class SolidConfiguration {
         this.context.bindMethod("replace_first", new ReplaceFirstSolidMethod());
         this.context.bindMethod("reverse", new ReverseSolidMethod());
         this.context.bindMethod("relative_url", new RelativeUrlSolidMethod());
+        this.context.bindMethod("trim", new TrimSolidMethod());
     }
 
     public SolidContext getContext() {
